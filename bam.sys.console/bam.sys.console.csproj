@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\bam.configuration\bam.configuration\bam.configuration.csproj" />
+    <ProjectReference Include="..\..\bam.sys\bam.sys\bam.sys.csproj" />
+  </ItemGroup>
+
+</Project>
