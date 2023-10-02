@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bam.Net;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,14 @@ namespace Bam.Sys.Console
 {
     public class ConsoleMenuInput : IMenuInput
     {
+        public const string SelectorPrefix = ":";
+
         public ConsoleMenuInput()
         {
-            Index = -1;
             ExitCode = 0;
         }
+
+        public StringBuilder Input { get; set; }
 
         public bool Exit
         {
@@ -40,16 +44,60 @@ namespace Bam.Sys.Console
             }
         }
 
+        public bool IsMenuItemNavigation
+        {
+            get
+            {
+                return IsMenuItemNavigationKey(ConsoleKey);
+            }
+        }
+
+        public bool IsMenuNavigation
+        {
+            get
+            {
+                return IsMenuNavigationKey(ConsoleKey);
+            }
+        }
+
+        public bool IsSelector
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(Value))
+                {
+                    return Value.StartsWith(SelectorPrefix);
+                }
+                return false;
+            }
+        }
+
         public string Value
         {
-            get;
-            set;
+            get
+            {
+                return Input.ToString();
+            }
+        }
+
+        public string Selector
+        {
+            get
+            {
+                if (IsSelector)
+                {
+                    return Value.Trim().TruncateFront(1);
+                }
+                return string.Empty;
+            }
         }
 
         public ConsoleKey ConsoleKey
         {
-            get;
-            set;
+            get
+            {
+                return ConsoleKeyInfo.Key;
+            }
         }
 
         public ConsoleKeyInfo ConsoleKeyInfo
@@ -58,23 +106,53 @@ namespace Bam.Sys.Console
             set;
         }
 
-        public int Index
+        public int ItemNumber
+        {
+            get
+            {
+                if(int.TryParse(Value, out int itemNumber))
+                {
+                    return itemNumber;
+                }
+                return -1;
+            }
+        }
+
+        public bool NextItem
         {
             get;
             set;
         }
 
-        public bool Next
+        public bool PreviousItem
         {
             get;
             set;
         }
 
-        public bool Previous
+        public bool NextMenu
         {
             get;
             set;
         }
+
+        public bool PreviousMenu
+        {
+            get;
+            set;
+        }
+
+        public virtual bool IsMenuItemNavigationKey(ConsoleKey key)
+        {
+            return key == ConsoleKey.UpArrow ||
+                key == ConsoleKey.DownArrow;
+        }
+
+        public virtual bool IsMenuNavigationKey(ConsoleKey key)
+        {
+            return key == ConsoleKey.RightArrow ||
+                key == ConsoleKey.LeftArrow;
+        }        
 
         public static bool IsNavigationKey(ConsoleKey key)
         {

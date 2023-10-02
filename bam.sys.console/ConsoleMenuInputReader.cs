@@ -36,48 +36,49 @@ namespace Bam.Sys.Console
             private set;
         }
 
-        public void Reset()
-        {
-            Input.Clear();
-        }
-
         public IMenuInput ReadMenuInput()
         {
-            ReadingInput?.Invoke(this, new MenuInputOutputLoopEventArgs
-            {
-
-            });
             ConsoleKeyInfo consoleKeyInfo = System.Console.ReadKey();
             if (!ConsoleMenuInput.IsNavigationKey(consoleKeyInfo.Key))
             {
                 Input.Append(consoleKeyInfo.KeyChar);
-            }
-            if (consoleKeyInfo.Key == ConsoleKey.Backspace)
-            {
-                string currentInput = Input.ToString();
-                int newLength = currentInput.Length - 2;
-                if (newLength >= 0)
+
+                if (consoleKeyInfo.Key == ConsoleKey.Backspace)
                 {
-                    StringBuilder newInput = new StringBuilder(Input.ToString().Substring(0, newLength));
-                    Input = newInput;
+                    string currentInput = Input.ToString();
+                    int newLength = currentInput.Length - 2;
+                    if (newLength >= 0)
+                    {
+                        StringBuilder newInput = new StringBuilder(Input.ToString().Substring(0, newLength));
+                        Input = newInput;
+                    }
                 }
+                // clean up backspaces
+                string input = Input.ToString().Trim();
+                if (consoleKeyInfo.Key == ConsoleKey.Spacebar)
+                {
+                    input += " ";
+                }
+                Input.Clear();
+                Input.Append(input);
             }
+
             ConsoleMenuInput menuInput = new ConsoleMenuInput
             {
-                Value = Input.ToString(),
+                Input = Input,
                 Exit = consoleKeyInfo.Key == ConsoleKey.Escape,
-                ConsoleKey = consoleKeyInfo.Key,
                 ConsoleKeyInfo = consoleKeyInfo,
-                Next = consoleKeyInfo.Key == ConsoleKey.DownArrow,
-                Previous = consoleKeyInfo.Key == ConsoleKey.UpArrow,
+                NextItem = consoleKeyInfo.Key == ConsoleKey.DownArrow,
+                PreviousItem = consoleKeyInfo.Key == ConsoleKey.UpArrow,
+                NextMenu = consoleKeyInfo.Key == ConsoleKey.RightArrow,
+                PreviousMenu = consoleKeyInfo.Key == ConsoleKey.LeftArrow,
                 Enter = consoleKeyInfo.Key == ConsoleKey.Enter
             };
-
-            if (int.TryParse(menuInput.Value, out int stringIndex))
+            ReadingInput?.Invoke(this, new MenuInputOutputLoopEventArgs
             {
-                menuInput.Index = stringIndex - 1;
-            }
-
+                MenuInputReader = this,
+                MenuInput = menuInput,
+            });
             return menuInput;
         }
     }

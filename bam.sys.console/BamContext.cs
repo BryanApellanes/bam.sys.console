@@ -35,8 +35,6 @@ namespace Bam.Sys.Console
 
         public static void Main(string[] args)
         {
-            List<MenuSpecs> menuSpecs = new List<MenuSpecs>();
-            
             Main(args, MenuSpecs.LoadList.ToArray());
         }
 
@@ -44,6 +42,7 @@ namespace Bam.Sys.Console
         {
             Current.AddSwitches();
             Current.AddConfigurationSwitches();
+            MenuSpecs.LoadList = menuSpecs;
             Main(args, () => { });
         }
 

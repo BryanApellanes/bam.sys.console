@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bam.CommandLine;
+using Bam.Net;
 using Bam.Net.CommandLine;
+using Bam.Net.Logging;
 using Bam.Sys;
 
 namespace Bam.Sys.Console.Tests.TestClasses
 {
-    [Menu("Sys Console Menu")]
+    [Menu<MenuItemAttribute>("Sys Console Menu")]
+    [Menu<ConsoleCommandAttribute>("Console Commands")]
     public class SysConsoleTestMenuClass
     {
         public SysConsoleTestMenuClass() { }
@@ -19,6 +23,7 @@ namespace Bam.Sys.Console.Tests.TestClasses
         {
             Message.PrintLine("this is a console action. you typed {0}", input);
         }
+
 
         [MenuItem("Menu item one")]
         public void MenuMethod()
@@ -42,6 +47,21 @@ namespace Bam.Sys.Console.Tests.TestClasses
         public void SelectorItem()
         {
             Message.PrintLine("This item is selectable by the selector 'choose me'");
+        }
+
+        [ConsoleCommand]
+        public void MenuSpecComparison()
+        {
+            MenuSpec menuSpec1 = new MenuSpec(typeof(SysConsoleTestMenuClass), typeof(MenuItem));
+            MenuSpec menuSpec2 = new MenuSpec(typeof(SysConsoleTestMenuClass), typeof(MenuItem));
+
+            menuSpec1.Equals(menuSpec2).ShouldBeTrue();            
+        }
+
+        [ConsoleCommand("log", "add an information entry")]
+        public void LogInfo()
+        {
+            Log.Info("Hello this is a log message");
         }
     }
 }

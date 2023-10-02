@@ -1,4 +1,5 @@
-﻿using Bam.Services;
+﻿using Bam.Commandline.Menu;
+using Bam.Services;
 using Bam.Sys;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,10 @@ namespace Bam.Sys.Console
         {
             DependencyProvider = dependencyProvider;
             InputParser = menuInputParser;
+        }
+
+        public ConsoleMenuItemRunner(IDependencyProvider dependencyProvider) : this(dependencyProvider, new MenuInputParaser(new StringParameterProvider()))
+        {
         }
 
         public IMenuInputParser InputParser { get; set; }

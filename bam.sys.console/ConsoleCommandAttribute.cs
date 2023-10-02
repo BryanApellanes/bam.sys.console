@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bam.Sys.Console
 {
-    public class ConsoleCommandAttribute : MenuAttribute
+    public class ConsoleCommandAttribute : MenuItemAttribute
     {
         public ConsoleCommandAttribute() { }
         public ConsoleCommandAttribute(string name) : base(name)

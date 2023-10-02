@@ -13,6 +13,14 @@ namespace Bam.Sys.Console
         public void RenderMenuFooter(IMenu menu, params IMenu[] otherMenus)
         {
             Message.PrintLine(menu.FooterText);
+            if(otherMenus != null)
+            {
+                foreach(IMenu otherMenu in otherMenus)
+                {
+                    Message.Print("[{0}{1}] {2}\t", ConsoleMenuInput.SelectorPrefix, otherMenu.Selector, otherMenu.Name);
+                }
+            }
+            Message.PrintLine();
         }
     }
 }

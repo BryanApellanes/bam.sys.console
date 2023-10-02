@@ -29,7 +29,7 @@ namespace Bam.Sys.Console
             foreach (IMenuItem item in menu.Items)
             {
                 string pointer = item.Selected ? ">" : " ";
-                string selector = !string.IsNullOrEmpty(item.Selector) ? $"[{item.Selector}] " : "";
+                string selector = !string.IsNullOrEmpty(item.Selector) ? $"[{ConsoleMenuInput.SelectorPrefix}{item.Selector}] " : "";
                 Message.PrintLine($"{pointer} {++number}. {selector}{item.DisplayName}");
             }
         }
@@ -52,7 +52,7 @@ namespace Bam.Sys.Console
         {
             HeaderRenderer.RenderMenuHeader(menu);
             RenderItems(menu);
-            FooterRenderer.RenderMenuFooter(menu);
+            FooterRenderer.RenderMenuFooter(menu, otherMenus);
         }
     }
 }
