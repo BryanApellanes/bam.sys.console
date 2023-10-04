@@ -5,6 +5,8 @@ using Bam.Net.CommandLine;
 using Bam.Net.Configuration;
 using Bam.Net.CoreServices;
 using Bam.Net.Logging;
+using Bam.Sys;
+using Bam.Sys.Console;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +15,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bam.Sys.Console
+namespace Bam.Console
 {
     public class BamContext : IBamContext
     {
@@ -24,13 +26,13 @@ namespace Bam.Sys.Console
 
         public BamContext()
         {
-            this.ValidArgumentInfo = new List<ArgumentInfo>();
-            this.ServiceRegistry = GetServiceRegistry();
+            ValidArgumentInfo = new List<ArgumentInfo>();
+            ServiceRegistry = GetServiceRegistry();
         }
 
         public BamContext(ServiceRegistry serviceRegistry) : this()
         {
-            this.ServiceRegistry = serviceRegistry;
+            ServiceRegistry = serviceRegistry;
         }
 
         public static void Main(string[] args)
@@ -105,7 +107,7 @@ namespace Bam.Sys.Console
         protected static IEnumerable<MenuSpecs> LoadMenuSpecs()
         {
             Assembly? entryAssembly = Assembly.GetEntryAssembly();
-            if(entryAssembly != null )
+            if (entryAssembly != null)
             {
                 return LoadMenuSpecs(entryAssembly);
             }
@@ -114,7 +116,7 @@ namespace Bam.Sys.Console
 
         protected static IEnumerable<MenuSpecs> LoadMenuSpecs(params Assembly[] assemblies)
         {
-            foreach(Assembly aseembly in assemblies)
+            foreach (Assembly aseembly in assemblies)
             {
 
             }
@@ -293,7 +295,7 @@ File Version: {1}
         {
             foreach (MethodInfo method in type.GetMethods())
             {
-                if (method.HasCustomAttributeOfType<ConsoleCommandAttribute>(out ConsoleCommandAttribute attribute))
+                if (method.HasCustomAttributeOfType(out ConsoleCommandAttribute attribute))
                 {
                     if (!string.IsNullOrEmpty(attribute.Switch))
                     {

@@ -1,4 +1,5 @@
 ﻿using Bam.Net.CommandLine;
+using Bam.Sys;
 using Bam.Testing;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bam.Sys.Console.Tests.TestClasses
+namespace Bam.Console.Tests.TestClasses
 {
     [Menu<TestAttribute>("Tests")]
     public class UnitTests

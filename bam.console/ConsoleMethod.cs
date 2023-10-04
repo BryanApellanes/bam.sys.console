@@ -10,7 +10,7 @@ using Bam.Net;
 using System.Diagnostics;
 using Bam.Net.Logging;
 
-namespace Bam.Sys.Console
+namespace Bam.Console
 {
     [Serializable]
     public class ConsoleMethod

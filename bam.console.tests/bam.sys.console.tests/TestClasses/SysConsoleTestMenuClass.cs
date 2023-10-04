@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bam.CommandLine;
+using Bam.Console;
 using Bam.Net;
 using Bam.Net.CommandLine;
 using Bam.Net.Logging;
 using Bam.Sys;
 
-namespace Bam.Sys.Console.Tests.TestClasses
+namespace Bam.Console.Tests.TestClasses
 {
     [Menu<MenuItemAttribute>("Sys Console Menu")]
     [Menu<ConsoleCommandAttribute>("Console Commands")]
@@ -19,7 +20,7 @@ namespace Bam.Sys.Console.Tests.TestClasses
         public SysConsoleTestMenuClass() { }
 
         [ConsoleCommand("Do some stuff")]
-        public void ConsoleAction(string input) 
+        public void ConsoleAction(string input)
         {
             Message.PrintLine("this is a console action. you typed {0}", input);
         }
@@ -55,7 +56,7 @@ namespace Bam.Sys.Console.Tests.TestClasses
             MenuSpec menuSpec1 = new MenuSpec(typeof(SysConsoleTestMenuClass), typeof(MenuItem));
             MenuSpec menuSpec2 = new MenuSpec(typeof(SysConsoleTestMenuClass), typeof(MenuItem));
 
-            menuSpec1.Equals(menuSpec2).ShouldBeTrue();            
+            menuSpec1.Equals(menuSpec2).ShouldBeTrue();
         }
 
         [ConsoleCommand("log", "add an information entry")]

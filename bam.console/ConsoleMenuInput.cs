@@ -1,11 +1,12 @@
 ﻿using Bam.Net;
+using Bam.Sys;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bam.Sys.Console
+namespace Bam.Console
 {
     public class ConsoleMenuInput : IMenuInput
     {
@@ -110,7 +111,7 @@ namespace Bam.Sys.Console
         {
             get
             {
-                if(int.TryParse(Value, out int itemNumber))
+                if (int.TryParse(Value, out int itemNumber))
                 {
                     return itemNumber;
                 }
@@ -152,7 +153,7 @@ namespace Bam.Sys.Console
         {
             return key == ConsoleKey.RightArrow ||
                 key == ConsoleKey.LeftArrow;
-        }        
+        }
 
         public static bool IsNavigationKey(ConsoleKey key)
         {

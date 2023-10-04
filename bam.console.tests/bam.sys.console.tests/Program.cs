@@ -1,5 +1,5 @@
 ﻿using Bam.CommandLine;
-using Bam.Sys.Console;
+using Bam.Console;
 
 namespace Bam.Net.Application
 {

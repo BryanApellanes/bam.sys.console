@@ -9,11 +9,11 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
-using Bam.CommandLine;
 using Bam.Net;
 using Bam.Net.CommandLine;
+using Bam.Console;
 
-namespace Bam.CommandLine
+namespace Bam.Console
 {
     public static class Extensions
     {

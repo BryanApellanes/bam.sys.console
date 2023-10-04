@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bam.Sys.Console
+namespace Bam.Console
 {
     public class ConsoleMenuRenderer : MenuRenderer
     {
