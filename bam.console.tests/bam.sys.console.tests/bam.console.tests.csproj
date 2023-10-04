@@ -12,7 +12,7 @@
     <ProjectReference Include="..\..\..\bam.commandline\bam.commandline\bam.commandline.csproj" />
     <ProjectReference Include="..\..\..\bam.sys\bam.sys\bam.sys.csproj" />
     <ProjectReference Include="..\..\..\bam.testing\bam.testing\bam.testing.csproj" />
-    <ProjectReference Include="..\..\bam.sys.console\bam.sys.console.csproj" />
+    <ProjectReference Include="..\..\bam.console\bam.console.csproj" />
   </ItemGroup>
 
 </Project>
