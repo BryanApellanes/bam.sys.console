@@ -38,6 +38,11 @@ namespace Bam.Sys.Console
             Main(args, MenuSpecs.LoadList.ToArray());
         }
 
+        public static void Main(string[] args, params Assembly[] assemblies)
+        {
+            Main(args, MenuSpecs.Scan(assemblies).ToArray());
+        }
+
         public static void Main(string[] args, params MenuSpecs[] menuSpecs)
         {
             Current.AddSwitches();
@@ -46,7 +51,7 @@ namespace Bam.Sys.Console
             Main(args, () => { });
         }
 
-        public static void Main(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler = null)
+        public static async void Main(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler = null)
         {
             if (parseErrorHandler == null)
             {
@@ -255,7 +260,7 @@ File Version: {1}
                 .For<IMenuItemProvider>().Use<MenuItemProvider>()
                 .For<IMenuRenderer>().Use<ConsoleMenuRenderer>()
                 .For<IMenuInputParser>().Use<MenuInputParaser>()
-                .For<ITypedParameterProvider>().Use<StringParameterProvider>()
+                .For<ITypedArgumentProvider>().Use<StringArgumentProvider>()
                 .For<IMenuItemRunResultRenderer>().Use<ConsoleMenuItemRunResultRenderer>()
                 .For<IMenuManager>().Use<MenuManager>();
 

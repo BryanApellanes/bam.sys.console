@@ -13,12 +13,25 @@ namespace Bam.Sys.Console
         public void RenderMenuFooter(IMenu menu, params IMenu[] otherMenus)
         {
             Message.PrintLine(menu.FooterText);
-            if(otherMenus != null)
+            List<IMenu> menus = new List<IMenu>
             {
-                foreach(IMenu otherMenu in otherMenus)
+                menu
+            };
+
+            if (otherMenus != null)
+            {
+                menus.AddRange(otherMenus);
+            }
+            menus.Sort((x, y) => x.Selector.CompareTo(y.Selector));
+
+            foreach (IMenu m in menus)
+            {
+                ConsoleColorCombo colors = new ConsoleColorCombo(ConsoleColor.Cyan, ConsoleColor.Black);
+                if (m == menu)
                 {
-                    Message.Print("[{0}{1}] {2}\t", ConsoleMenuInput.SelectorPrefix, otherMenu.Selector, otherMenu.Name);
+                    colors = new ConsoleColorCombo(ConsoleColor.Black, ConsoleColor.White);
                 }
+                Message.Print("[{0}{1}] {2}\t", colors, ConsoleMenuInput.SelectorPrefix, m.Selector, m.Name);
             }
             Message.PrintLine();
         }

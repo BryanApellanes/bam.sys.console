@@ -16,7 +16,7 @@ namespace Bam.Sys.Console
             InputParser = menuInputParser;
         }
 
-        public ConsoleMenuItemRunner(IDependencyProvider dependencyProvider) : this(dependencyProvider, new MenuInputParaser(new StringParameterProvider()))
+        public ConsoleMenuItemRunner(IDependencyProvider dependencyProvider) : this(dependencyProvider, new MenuInputParaser(new StringArgumentProvider()))
         {
         }
 
