@@ -1,6 +1,6 @@
 ﻿using Bam.Commandline.Menu;
 using Bam.Services;
-using Bam.Sys;
+using Bam.Shell;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,17 +10,17 @@ namespace Bam.Console
 {
     public class ConsoleMenuItemRunner : IMenuItemRunner
     {
-        public ConsoleMenuItemRunner(IDependencyProvider dependencyProvider, IMenuInputParser menuInputParser)
+        public ConsoleMenuItemRunner(IDependencyProvider dependencyProvider, IMenuInputMethodArgumentProvider menuInputParser)
         {
             DependencyProvider = dependencyProvider;
-            InputParser = menuInputParser;
+            MethodArgumentProvider = menuInputParser;
         }
 
-        public ConsoleMenuItemRunner(IDependencyProvider dependencyProvider) : this(dependencyProvider, new MenuInputParaser(new StringArgumentProvider()))
+        public ConsoleMenuItemRunner(IDependencyProvider dependencyProvider) : this(dependencyProvider, new MenuInputMethodArgumentProvider(new StringArgumentProvider()))
         {
         }
 
-        public IMenuInputParser InputParser { get; set; }
+        public IMenuInputMethodArgumentProvider MethodArgumentProvider { get; set; }
 
         /// <summary>
         /// Gets the componenet that provides instances for non static menu item methods.
@@ -39,7 +39,7 @@ namespace Bam.Console
                     }
                 }
 
-                object? result = menuItem.MethodInfo.Invoke(menuItem.Instance, InputParser.GetMethodParameters(menuItem, menuInput));
+                object? result = menuItem.MethodInfo.Invoke(menuItem.Instance, MethodArgumentProvider.GetMethodArguments(menuItem, menuInput));
 
                 return new MenuItemRunResult()
                 {

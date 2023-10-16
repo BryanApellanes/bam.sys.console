@@ -1,5 +1,5 @@
 ﻿using Bam.Net.CommandLine;
-using Bam.Sys;
+using Bam.Shell;
 using Bam.Testing;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace Bam.Console.Tests.TestClasses
     [Menu<TestAttribute>("Tests")]
     public class UnitTests
     {
-        [Test(TestKind.UnitTest)]
+        [Test(TestType.Unit)]
         public void FakeTestForTesting()
         {
             Message.PrintLine("it worked", ConsoleColor.Green);

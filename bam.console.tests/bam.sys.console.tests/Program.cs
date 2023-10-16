@@ -4,7 +4,7 @@ using Bam.Console;
 namespace Bam.Net.Application
 {
     [Serializable]
-    class Program : CommandLineTool
+    class Program
     {
         static void Main(string[] args)
         {

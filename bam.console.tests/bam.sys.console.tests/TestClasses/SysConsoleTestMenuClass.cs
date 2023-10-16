@@ -9,7 +9,7 @@ using Bam.Console;
 using Bam.Net;
 using Bam.Net.CommandLine;
 using Bam.Net.Logging;
-using Bam.Sys;
+using Bam.Shell;
 
 namespace Bam.Console.Tests.TestClasses
 {

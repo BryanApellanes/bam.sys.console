@@ -1,5 +1,5 @@
-﻿using Bam.Sys;
-using Bam.Sys.Console;
+﻿using Bam.Shell;
+using Bam.Shell.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;

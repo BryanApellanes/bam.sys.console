@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\bam.configuration\bam.configuration\bam.configuration.csproj" />
-    <ProjectReference Include="..\..\bam.sys\bam.sys\bam.sys.csproj" />
+    <ProjectReference Include="..\..\bam.shell\bam.shell\bam.shell.csproj" />
   </ItemGroup>
 
 </Project>

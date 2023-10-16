@@ -5,8 +5,8 @@ using Bam.Net.CommandLine;
 using Bam.Net.Configuration;
 using Bam.Net.CoreServices;
 using Bam.Net.Logging;
-using Bam.Sys;
-using Bam.Sys.Console;
+using Bam.Shell;
+using Bam.Shell.Console;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -261,10 +261,16 @@ File Version: {1}
                 .For<IMenuInputReader>().Use<ConsoleMenuInputReader>()
                 .For<IMenuItemProvider>().Use<MenuItemProvider>()
                 .For<IMenuRenderer>().Use<ConsoleMenuRenderer>()
-                .For<IMenuInputParser>().Use<MenuInputParaser>()
+                .For<IMenuInputMethodArgumentProvider>().Use<MenuInputMethodArgumentProvider>()
                 .For<ITypedArgumentProvider>().Use<StringArgumentProvider>()
                 .For<IMenuItemRunResultRenderer>().Use<ConsoleMenuItemRunResultRenderer>()
-                .For<IMenuManager>().Use<MenuManager>();
+                .For<IInputCommandResultRenderer>().Use<ConsoleInputCommandResultRenderer>()
+                .For<IMenuItemSelector>().Use<MenuItemSelector>()
+                .For<IMenuItemRunner>().Use<ConsoleMenuItemRunner>()
+                .For<ISuccessReporter>().Use<ConsoleSuccessReporter>()
+                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();
+            
+                
 
             serviceRegistry.For<ConsoleMenuHeaderRenderer>().Use(serviceRegistry.Get<IMenuHeaderRenderer>())
                 .For<ConsoleMenuFooterRenderer>().Use(serviceRegistry.Get<IMenuFooterRenderer>())
@@ -272,9 +278,12 @@ File Version: {1}
 
             serviceRegistry
                 .For<Services.IDependencyProvider>().Use(serviceRegistry)
-                .For<IMenuItemSelector>().Use<MenuItemSelector>()
-                .For<IMenuInputCommandInterpreter>().Use<NullMenuInputCommandInterpreter>()
-                .For<IMenuItemRunner>().Use<ConsoleMenuItemRunner>();
+                .For<IMenuInputCommandInterpreter>().Use<InputCommandInterpreter>()
+                .For<IMenuManager>().UseSingleton<MenuManager>();
+
+
+            serviceRegistry
+                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();
 
             return serviceRegistry;
         }
@@ -297,9 +306,9 @@ File Version: {1}
             {
                 if (method.HasCustomAttributeOfType(out ConsoleCommandAttribute attribute))
                 {
-                    if (!string.IsNullOrEmpty(attribute.Switch))
+                    if (!string.IsNullOrEmpty(attribute.OptionName))
                     {
-                        AddValidArgument(attribute.Switch, true, true, attribute.Description, attribute.ValueExample);
+                        AddValidArgument(attribute.OptionName, true, true, attribute.Description, attribute.ValueExample);
                     }
                 }
             }
@@ -361,8 +370,8 @@ File Version: {1}
             {
                 if (method.HasCustomAttributeOfType(out ConsoleCommandAttribute consoleAction))
                 {
-                    if (consoleAction.Switch.Or("").Equals(commandLineSwitch) ||
-                        consoleAction.Switch.CaseAcronym().ToLowerInvariant().Or("").Equals(commandLineSwitch))
+                    if (consoleAction.OptionName.Or("").Equals(commandLineSwitch) ||
+                        consoleAction.OptionName.CaseAcronym().ToLowerInvariant().Or("").Equals(commandLineSwitch))
                     {
                         toExecute.Add(new ConsoleMethod(method, consoleAction, instance, switchValue));
                     }

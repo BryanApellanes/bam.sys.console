@@ -1,9 +1,5 @@
-﻿using Bam.Sys;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bam.Net;
+using Bam.Shell;
 
 namespace Bam.Console
 {
@@ -15,6 +11,8 @@ namespace Bam.Console
 
         public ConsoleCommandAttribute(string name, string description) : base(name, description)
         {
+            this.OptionName = name.PascalCase(true, new string[] { " " });
+            this.OptionShortName = this.OptionName.CaseAcronym(true);
         }
 
         public string? ValueExample
@@ -23,7 +21,13 @@ namespace Bam.Console
             private set;
         }
 
-        public string? Switch
+        public string? OptionName
+        {
+            get;
+            private set;
+        }
+
+        public string? OptionShortName
         {
             get;
             private set;
