@@ -11,20 +11,20 @@ using System.Threading.Tasks;
 
 namespace Bam.Console
 {
-    public class InputCommandInterpreter : IMenuInputCommandInterpreter
+    public class DefaultMenuInputCommandInterpreter : IMenuInputCommandInterpreter
     {
         private Dictionary<Type, InputCommands> _inputOptions = new Dictionary<Type, InputCommands>();
 
-        public InputCommandInterpreter(IDependencyProvider dependencyProvider)
+        public DefaultMenuInputCommandInterpreter(IDependencyProvider dependencyProvider)
         {
             this.DependencyProvider = dependencyProvider;
         }
 
         public bool InterpretInput(IMenuManager menuManager, IMenuInput menuInput, out IInputCommandResults result)
         {
-            InputCommandResults returnValue = new InputCommandResults();
+            InputCommandResults results = new InputCommandResults();
 
-            result = returnValue;
+            result = results;
 
             if (menuManager == null)
             {
@@ -54,7 +54,7 @@ namespace Bam.Console
             if (inputOptions.Commands.ContainsKey(optionName))
             {
                 InputCommandResult optionResult = InvokeOption(inputOptions.Commands[optionName], arguments);
-                returnValue.AddResult(optionResult);
+                results.AddResult(optionResult);
                 return true;
             }
 
@@ -102,7 +102,7 @@ namespace Bam.Console
                 return new InputCommandResult()
                 {
                     InputName = command.Name,
-                    Exception = ex
+                    Exception = ex.GetInnerException()
                 };
             }
         }

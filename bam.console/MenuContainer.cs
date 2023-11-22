@@ -1,18 +1,25 @@
 ﻿using Bam.Shell;
-using Bam.Console;
 using Bam.Services;
 using System.Reflection;
+using static Bam.Net.Analytics.Diff;
+using Bam.Net;
 
-namespace Bam.Testing
+namespace Bam.Console
 {
     public abstract class MenuContainer
     {
         public MenuContainer() { }
 
+        /// <summary>
+        /// Create a new MenuContainer using the specified dependency provider.
+        /// </summary>
+        /// <param name="dependencyProvider"></param>
         public MenuContainer(IDependencyProvider dependencyProvider)
+        // Note that this uses service locator specifically to empower a test writer
+        // to manipulate the state of the test container.
         {
-            this.DependencyProvider = dependencyProvider;
-            this.MethodArgumentProvider = new DependencyProviderMethodArgumentProvider(dependencyProvider);
+            DependencyProvider = dependencyProvider;
+            MethodArgumentProvider = new DependencyProviderMethodArgumentProvider(dependencyProvider);
         }
 
         protected IDependencyProvider DependencyProvider
@@ -44,7 +51,7 @@ namespace Bam.Testing
         }
 
         [InputCommand("all")]
-        public void RunAllItems(IMenuManager menuManager)
+        public InputCommandResults RunAllItems(IMenuManager menuManager)
         {
             if (menuManager == null)
             {
@@ -55,7 +62,7 @@ namespace Bam.Testing
             {
                 throw new InvalidOperationException($"Current menu is not set.");
             }
-
+            InputCommandResults results = new InputCommandResults();
             foreach (IMenuItem item in menuManager.CurrentMenu.Items)
             {
                 if (item != null && item.MethodInfo != null)
@@ -69,21 +76,34 @@ namespace Bam.Testing
                     {
                         instance = item.Instance;
                     }
-                    TryInvoke(item.DisplayName, item.MethodInfo, instance);
-                    SuccessReporter.ReportSuccess($"{item.DisplayName} completed successfully.");
+
+                    results.AddResult(TryInvoke(item.DisplayName, item.MethodInfo, instance));
                 }
             }
+            return results;
         }
-        private void TryInvoke(string itemDisplayName, MethodInfo method, object? instance)
+        private InputCommandResult TryInvoke(string itemDisplayName, MethodInfo method, object? instance)
         {
             try
             {
-                method.Invoke(instance, MethodArgumentProvider.GetMethodArguments(method));
+                object? result = method.Invoke(instance, MethodArgumentProvider.GetMethodArguments(method));
+                SuccessReporter.ReportSuccess($"{itemDisplayName} completed successfully.");
+                return new InputCommandResult()
+                {
+                    InputName = itemDisplayName,
+                    InvocationResult = result
+                };
             }
             catch (Exception ex)
             {
-                this.ExceptionReporter.ReportException(ex);
+                Exception e = ex.GetInnerException();
+                ExceptionReporter.ReportException(e);
+                return new InputCommandResult()
+                { 
+                    InputName = itemDisplayName, 
+                    Exception = e 
+                };
             }
-        }        
+        }
     }
 }

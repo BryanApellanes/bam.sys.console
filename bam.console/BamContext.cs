@@ -278,7 +278,8 @@ File Version: {1}
 
             serviceRegistry
                 .For<Services.IDependencyProvider>().Use(serviceRegistry)
-                .For<IMenuInputCommandInterpreter>().Use<InputCommandInterpreter>()
+                .For<ServiceRegistry>().Use(serviceRegistry)
+                .For<IMenuInputCommandInterpreter>().Use<DefaultMenuInputCommandInterpreter>()
                 .For<IMenuManager>().UseSingleton<MenuManager>();
 
 

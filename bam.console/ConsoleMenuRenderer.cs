@@ -17,12 +17,6 @@ namespace Bam.Console
             Divider = "*".Times(30);
         }
 
-        public string Divider
-        {
-            get;
-            set;
-        }
-
         protected override void RenderItems(IMenu menu)
         {
             int number = 0;
@@ -42,9 +36,7 @@ namespace Bam.Console
             if (menuInput.Enter)
             {
                 Message.PrintLine();
-                Message.PrintLine();
-                Message.PrintLine(Divider, ConsoleColor.Yellow);
-                Message.PrintLine();
+                RenderDivider();
             }
         }
 
@@ -53,6 +45,13 @@ namespace Bam.Console
             HeaderRenderer.RenderMenuHeader(menu);
             RenderItems(menu);
             FooterRenderer.RenderMenuFooter(menu, otherMenus);
+        }
+
+        public override void RenderDivider()
+        {
+            Message.PrintLine();
+            Message.PrintLine(Divider, ConsoleColor.DarkYellow);
+            Message.PrintLine();
         }
     }
 }

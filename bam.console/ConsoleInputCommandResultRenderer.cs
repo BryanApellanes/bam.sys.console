@@ -1,4 +1,5 @@
-﻿using Bam.Net.CommandLine;
+﻿using Bam.Net;
+using Bam.Net.CommandLine;
 using Bam.Shell;
 using System;
 using System.Collections.Generic;
@@ -15,17 +16,24 @@ namespace Bam.Console
             ConsoleColorCombo colors = new ConsoleColorCombo(ConsoleColor.Green, ConsoleColor.Black);
             string result = "succeeded";
             string commandName = "command";
+            string extended = string.Empty;
             if (inputCommandResult != null)
             {
                 commandName = inputCommandResult.InputName ?? commandName;
                 if (!inputCommandResult.Success)
                 {
-                    colors = new ConsoleColorCombo(ConsoleColor.Magenta, ConsoleColor.Yellow);
+                    colors = new ConsoleColorCombo(ConsoleColor.DarkRed, ConsoleColor.DarkYellow);
                     result = "failed";
+                    extended = inputCommandResult.Exception.GetMessageAndStackTrace();
                 }
             }
             Message.Print("> {0} -- ", ConsoleColor.Cyan, commandName);
-            Message.PrintLine(" {1}", colors, commandName, result);
+            Message.Print(" {1}", colors, commandName, result);
+            Message.PrintLine();
+            if (extended != string.Empty)
+            {
+                Message.PrintLine(extended, ConsoleColor.DarkRed);
+            }
         }
     }
 }
