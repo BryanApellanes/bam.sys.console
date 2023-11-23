@@ -31,6 +31,15 @@ namespace Bam.Console
             }
         }
 
+        public string Description
+        {
+            get
+            {
+                return Attribute.Description;
+            }
+        }
+
+
         public Type ContainerType { get; set; }
         
         public MethodInfo OptionMethod { get; set; }

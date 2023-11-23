@@ -13,6 +13,8 @@ namespace Bam.Console
     {
         public void RenderInputCommandResult(IInputCommandResult inputCommandResult)
         {
+            Args.ThrowIfNull(inputCommandResult, nameof(inputCommandResult));
+
             ConsoleColorCombo colors = new ConsoleColorCombo(ConsoleColor.Green, ConsoleColor.Black);
             string result = "succeeded";
             string commandName = "command";
@@ -27,12 +29,21 @@ namespace Bam.Console
                     extended = inputCommandResult.Exception.GetMessageAndStackTrace();
                 }
             }
-            Message.Print("> {0} -- ", ConsoleColor.Cyan, commandName);
-            Message.Print(" {1}", colors, commandName, result);
             Message.PrintLine();
+            Message.Print(" > command ");
+            Message.Print("'{0}'", new ConsoleColorCombo(ConsoleColor.White, ConsoleColor.DarkYellow), commandName);
+            Message.Print(" --> ");
+            Message.Print(" {0}", colors, result);
+            Message.PrintLine();
+            
+            if(inputCommandResult?.Message != null)            
+            {
+                Message.PrintLine(inputCommandResult.Message, colors);
+            }
+
             if (extended != string.Empty)
             {
-                Message.PrintLine(extended, ConsoleColor.DarkRed);
+                Message.PrintLine(extended, ConsoleColor.DarkMagenta);
             }
         }
     }

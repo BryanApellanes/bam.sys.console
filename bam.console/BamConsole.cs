@@ -17,20 +17,20 @@ using System.Threading.Tasks;
 
 namespace Bam.Console
 {
-    public class BamContext : IBamContext
+    public class BamConsole : IBamContext
     {
-        static BamContext()
+        static BamConsole()
         {
-            Current = new BamContext();
+            Current = new BamConsole();
         }
 
-        public BamContext()
+        public BamConsole()
         {
             ValidArgumentInfo = new List<ArgumentInfo>();
             ServiceRegistry = GetServiceRegistry();
         }
 
-        public BamContext(ServiceRegistry serviceRegistry) : this()
+        public BamConsole(ServiceRegistry serviceRegistry) : this()
         {
             ServiceRegistry = serviceRegistry;
         }
@@ -133,7 +133,7 @@ namespace Bam.Console
             Exited?.Invoke(code);
         }
 
-        public static BamContext Current
+        public static BamConsole Current
         {
             get;
             private set;
@@ -257,6 +257,7 @@ File Version: {1}
                 .For<ILogger>().Use(new ConsoleLogger())
                 .For<IMenuHeaderRenderer>().Use<ConsoleMenuHeaderRenderer>()
                 .For<IMenuFooterRenderer>().Use<ConsoleMenuFooterRenderer>()
+                .For<IMenuInputCommandRenderer>().Use<ConsoleMenuInputCommandRenderer>()
                 .For<IMenuProvider>().Use<ConsoleMenuProvider>()
                 .For<IMenuInputReader>().Use<ConsoleMenuInputReader>()
                 .For<IMenuItemProvider>().Use<MenuItemProvider>()
@@ -268,8 +269,7 @@ File Version: {1}
                 .For<IMenuItemSelector>().Use<MenuItemSelector>()
                 .For<IMenuItemRunner>().Use<ConsoleMenuItemRunner>()
                 .For<ISuccessReporter>().Use<ConsoleSuccessReporter>()
-                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();
-            
+                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();            
                 
 
             serviceRegistry.For<ConsoleMenuHeaderRenderer>().Use(serviceRegistry.Get<IMenuHeaderRenderer>())
@@ -340,7 +340,7 @@ File Version: {1}
             Assembly entryAssembly = Assembly.GetEntryAssembly();
             if (entryAssembly == null)
             {
-                logger.Info("Entry assembly is null for ({0})", typeof(BamContext).Name);
+                logger.Info("Entry assembly is null for ({0})", typeof(BamConsole).Name);
                 return false;
             }
             bool executed = false;

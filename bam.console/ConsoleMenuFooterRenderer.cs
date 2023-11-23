@@ -10,24 +10,14 @@ namespace Bam.Console
 {
     public class ConsoleMenuFooterRenderer : IMenuFooterRenderer
     {
-        public void RenderMenuFooter(IMenu menu, params IMenu[] otherMenus)
+        public void RenderMenuFooter(IMenu selectedMenu, params IMenu[] allMenus)
         {
-            Message.PrintLine(menu.FooterText);
-            List<IMenu> menus = new List<IMenu>
-            {
-                menu
-            };
+            Message.PrintLine(selectedMenu.FooterText);
 
-            if (otherMenus != null)
-            {
-                menus.AddRange(otherMenus);
-            }
-            menus.Sort((x, y) => x.Selector.CompareTo(y.Selector));
-
-            foreach (IMenu m in menus)
+            foreach (IMenu m in allMenus)
             {
                 ConsoleColorCombo colors = new ConsoleColorCombo(ConsoleColor.Cyan, ConsoleColor.Black);
-                if (m == menu)
+                if (m == selectedMenu)
                 {
                     colors = new ConsoleColorCombo(ConsoleColor.Black, ConsoleColor.White);
                 }

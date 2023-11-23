@@ -18,6 +18,11 @@ namespace Bam.Console
         // Note that this uses service locator specifically to empower a test writer
         // to manipulate the state of the test container.
         {
+            this.SetDependencyProvider(dependencyProvider);
+        }
+
+        protected void SetDependencyProvider(IDependencyProvider dependencyProvider)
+        {
             DependencyProvider = dependencyProvider;
             MethodArgumentProvider = new DependencyProviderMethodArgumentProvider(dependencyProvider);
         }
@@ -50,7 +55,12 @@ namespace Bam.Console
             }
         }
 
-        [InputCommand("all")]
+        public T Get<T>()
+        {
+            return DependencyProvider.Get<T>();
+        }
+
+        [InputCommand("all", "run all listed commands")]
         public InputCommandResults RunAllItems(IMenuManager menuManager)
         {
             if (menuManager == null)
@@ -97,7 +107,7 @@ namespace Bam.Console
             catch (Exception ex)
             {
                 Exception e = ex.GetInnerException();
-                ExceptionReporter.ReportException(e);
+                ExceptionReporter.ReportException($"{itemDisplayName} failed.", e);
                 return new InputCommandResult()
                 { 
                     InputName = itemDisplayName, 

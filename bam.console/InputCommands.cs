@@ -1,4 +1,5 @@
 ﻿using Bam.Net;
+using Bam.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,11 @@ namespace Bam.Console
 {
     public class InputCommands
     {
+        public InputCommands(IMenu menu) 
+            : this(menu.ContainerType)
+        {
+        }
+
         public InputCommands(Type type)
         {
             this.Commands = new Dictionary<string, InputCommand>();
@@ -36,5 +42,13 @@ namespace Bam.Console
         public Type ContainerType { get; private set; }
 
         public Dictionary<string, InputCommand> Commands{ get; private set; }
+
+        public IEnumerable<string> Names
+        {
+            get
+            {
+                return Commands.Keys;
+            }
+        }
     }
 }

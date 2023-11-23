@@ -1,4 +1,5 @@
 ﻿using Bam.Commandline.Menu;
+using Bam.Net;
 using Bam.Services;
 using Bam.Shell;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace Bam.Console
                     MenuItem = menuItem,
                     Success = false,
                     MenuInput = menuInput,
-                    Exception = ex,
+                    Exception = ex.GetInnerException(),
                 };
             }
         }

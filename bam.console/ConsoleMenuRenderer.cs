@@ -12,7 +12,7 @@ namespace Bam.Console
 {
     public class ConsoleMenuRenderer : MenuRenderer
     {
-        public ConsoleMenuRenderer(IMenuHeaderRenderer headerRenderer, IMenuFooterRenderer footerRenderer, IMenuInputReader inputReader) : base(headerRenderer, footerRenderer, inputReader)
+        public ConsoleMenuRenderer(IMenuHeaderRenderer headerRenderer, IMenuFooterRenderer footerRenderer, IMenuInputReader inputReader, IMenuInputCommandRenderer inputCommandRenderer) : base(headerRenderer, footerRenderer, inputReader, inputCommandRenderer)
         {
             Divider = "*".Times(30);
         }
@@ -40,11 +40,13 @@ namespace Bam.Console
             }
         }
 
-        public override void RenderMenu(IMenu menu, params IMenu[] otherMenus)
+        public override void RenderMenu(IMenu selectedMenu, params IMenu[] menus)
         {
-            HeaderRenderer.RenderMenuHeader(menu);
-            RenderItems(menu);
-            FooterRenderer.RenderMenuFooter(menu, otherMenus);
+            HeaderRenderer.RenderMenuHeader(selectedMenu);
+            RenderItems(selectedMenu);
+            FooterRenderer.RenderMenuFooter(selectedMenu, menus);
+            RenderInputCommands(selectedMenu);
+            RenderPrompt(selectedMenu);
         }
 
         public override void RenderDivider()
@@ -52,6 +54,16 @@ namespace Bam.Console
             Message.PrintLine();
             Message.PrintLine(Divider, ConsoleColor.DarkYellow);
             Message.PrintLine();
+        }
+
+        public override void RenderInputCommands(IMenu menu)
+        {
+            InputCommandRenderer.RenderMenuInputCommands(menu);
+        }
+
+        public virtual void RenderPrompt(IMenu menu)
+        {
+            Message.Print($" {menu.Selector} > ");
         }
     }
 }

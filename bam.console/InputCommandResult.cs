@@ -67,7 +67,10 @@ namespace Bam.Console
                     exceptions.Add(result.Exception);
                 }
             }
-            this.Exception = new AggregateException(exceptions);
+            if (exceptions.Count > 0)
+            {
+                this.Exception = new AggregateException(exceptions);
+            }
         }
 
         private void CheckResultException(InputCommandResult result)
