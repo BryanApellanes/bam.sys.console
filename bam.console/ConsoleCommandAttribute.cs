@@ -3,15 +3,21 @@ using Bam.Shell;
 
 namespace Bam.Console
 {
+    /// <summary>
+    /// Used to addorn methods that may be executed by a command line switch.
+    /// </summary>
     public class ConsoleCommandAttribute : MenuItemAttribute
     {
         public ConsoleCommandAttribute() { }
         public ConsoleCommandAttribute(string name) : base(name)
-        { }
+        {
+            this.OptionName = name.CamelCase(true, new string[] { " " });
+            this.OptionShortName = this.OptionName.CaseAcronym(true);
+        }
 
         public ConsoleCommandAttribute(string name, string description) : base(name, description)
         {
-            this.OptionName = name.PascalCase(true, new string[] { " " });
+            this.OptionName = name.CamelCase(true, new string[] { " " });
             this.OptionShortName = this.OptionName.CaseAcronym(true);
         }
 
@@ -21,6 +27,9 @@ namespace Bam.Console
             private set;
         }
 
+        /// <summary>
+        /// Gets the name of the command line option to specify in order to execute the method.
+        /// </summary>
         public string? OptionName
         {
             get;

@@ -43,14 +43,18 @@ namespace Bam.Console
         public MethodInfo Method { get; set; }
         public object[] Parameters { get; set; }
 
-        object _provider;
-        public object Provider
+        object? _provider;
+        public object? Provider
         {
             get
             {
-                if (_provider == null && !Method.IsStatic)
+                if (_provider == null && !Method.IsStatic && Method.DeclaringType != null)
                 {
                     _provider = Method.DeclaringType.Construct();
+                    if(_provider == null)
+                    {
+                        _provider = BamConsoleContext.Current.ServiceRegistry.Get(Method.DeclaringType);
+                    }
                 }
                 return _provider;
             }

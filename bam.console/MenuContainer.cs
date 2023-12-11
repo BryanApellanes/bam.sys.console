@@ -27,34 +27,39 @@ namespace Bam.Console
             MethodArgumentProvider = new DependencyProviderMethodArgumentProvider(dependencyProvider);
         }
 
-        protected IDependencyProvider DependencyProvider
+        protected IDependencyProvider? DependencyProvider
         {
             get;
             private set;
         }
 
-        protected IMethodArgumentProvider MethodArgumentProvider
+        protected IMethodArgumentProvider? MethodArgumentProvider
         {
             get;
-            set;
+            private set;
         }
 
-        protected IExceptionReporter ExceptionReporter
+        protected IExceptionReporter? ExceptionReporter
         {
             get
             {
-                return DependencyProvider.Get<IExceptionReporter>();
+                return DependencyProvider?.Get<IExceptionReporter>();
             }
         }
 
-        protected ISuccessReporter SuccessReporter
+        protected ISuccessReporter? SuccessReporter
         {
             get
             {
-                return DependencyProvider.Get<ISuccessReporter>();
+                return DependencyProvider?.Get<ISuccessReporter>();
             }
         }
 
+        /// <summary>
+        /// Get a configured instance of the specified generic type T.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T Get<T>()
         {
             return DependencyProvider.Get<T>();

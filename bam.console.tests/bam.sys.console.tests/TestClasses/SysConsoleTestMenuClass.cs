@@ -5,9 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bam.CommandLine;
-using Bam.Console;
 using Bam.Net;
-using Bam.Net.CommandLine;
 using Bam.Net.Logging;
 using Bam.Shell;
 

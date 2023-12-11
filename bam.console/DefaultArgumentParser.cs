@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Bam.Console
 {
-    public class ConsoleSuccessReporter : ISuccessReporter
+    public class DefaultArgumentParser : IArgumentParser
     {
-        public void ReportSuccess(string message)
+        public IParsedArguments ParseArguments(string[] arguments)
         {
-            Message.PrintLine(message, ConsoleColor.DarkGreen);
+            return new ParsedArguments(arguments);
         }
     }
 }

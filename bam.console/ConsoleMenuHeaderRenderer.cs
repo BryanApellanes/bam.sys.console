@@ -1,5 +1,4 @@
-﻿using Bam.Net.CommandLine;
-using Bam.Shell;
+﻿using Bam.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;

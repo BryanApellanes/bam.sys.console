@@ -1,7 +1,5 @@
 ﻿using Bam.Commandline.Menu;
-using Bam.CommandLine;
 using Bam.Net;
-using Bam.Net.CommandLine;
 using Bam.Net.Configuration;
 using Bam.Net.CoreServices;
 using Bam.Net.Logging;
@@ -12,25 +10,26 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Bam.Console
 {
-    public class BamConsole : IBamContext
+    public class BamConsoleContext : IBamContext
     {
-        static BamConsole()
+        static BamConsoleContext()
         {
-            Current = new BamConsole();
+            Current = new BamConsoleContext();
         }
 
-        public BamConsole()
+        public BamConsoleContext()
         {
             ValidArgumentInfo = new List<ArgumentInfo>();
             ServiceRegistry = GetServiceRegistry();
         }
 
-        public BamConsole(ServiceRegistry serviceRegistry) : this()
+        public BamConsoleContext(ServiceRegistry serviceRegistry) : this()
         {
             ServiceRegistry = serviceRegistry;
         }
@@ -104,26 +103,6 @@ namespace Bam.Console
             }
         }
 
-        protected static IEnumerable<MenuSpecs> LoadMenuSpecs()
-        {
-            Assembly? entryAssembly = Assembly.GetEntryAssembly();
-            if (entryAssembly != null)
-            {
-                return LoadMenuSpecs(entryAssembly);
-            }
-            return new List<MenuSpecs>();
-        }
-
-        protected static IEnumerable<MenuSpecs> LoadMenuSpecs(params Assembly[] assemblies)
-        {
-            foreach (Assembly aseembly in assemblies)
-            {
-
-            }
-
-            throw new NotImplementedException();
-        }
-
         public static void Exit(int code = 0)
         {
             System.Console.ResetColor();
@@ -133,7 +112,7 @@ namespace Bam.Console
             Exited?.Invoke(code);
         }
 
-        public static BamConsole Current
+        public static BamConsoleContext Current
         {
             get;
             private set;
@@ -149,6 +128,14 @@ namespace Bam.Console
         {
             get;
             private set;
+        }
+
+        public IArgumentParser ArgumentParser
+        {
+            get
+            {
+                return ServiceRegistry.Get<IArgumentParser>();
+            }
         }
 
         public IConfigurationProvider ConfigurationProvider
@@ -197,7 +184,7 @@ namespace Bam.Console
             }
         }
 
-        protected ParsedArguments Arguments
+        protected IParsedArguments Arguments
         {
             get;
             set;
@@ -252,6 +239,7 @@ File Version: {1}
         {
             ServiceRegistry serviceRegistry = new ServiceRegistry()
                 .For<IBamContext>().Use(this)
+                .For<IArgumentParser>().Use<DefaultArgumentParser>()
                 .For<IConfigurationProvider>().Use(new DefaultConfigurationProvider())
                 .For<IApplicationNameProvider>().Use(new ProcessApplicationNameProvider())
                 .For<ILogger>().Use(new ConsoleLogger())
@@ -301,6 +289,10 @@ File Version: {1}
             }
         }
 
+        /// <summary>
+        /// Reads the methods of the specified type and adds those addorned with <see cref="ConsoleCommandAttribute" /> as valid command line switches.
+        /// </summary>
+        /// <param name="type"></param>
         protected void AddSwitches(Type type)
         {
             foreach (MethodInfo method in type.GetMethods())
@@ -311,10 +303,15 @@ File Version: {1}
                     {
                         AddValidArgument(attribute.OptionName, true, true, attribute.Description, attribute.ValueExample);
                     }
+
+                    AddValidArgument(method.Name.CamelCase(), true, true, attribute.Description, attribute.ValueExample);
                 }
             }
         }
 
+        /// <summary>
+        /// Reads the configuration settings and adds them as valid command line switches.
+        /// </summary>
         protected void AddConfigurationSwitches()
         {
             Dictionary<string, string> configuration = ConfigurationProvider.GetApplicationConfiguration(ApplicationNameProvider.GetApplicationName());
@@ -324,7 +321,7 @@ File Version: {1}
 
         protected void ParseArgs(string[] args)
         {
-            Arguments = new ParsedArguments(args, ValidArgumentInfo.ToArray());
+            Arguments = this.ArgumentParser.ParseArguments(args);
             if (Arguments.Status == ArgumentParseStatus.Error || Arguments.Status == ArgumentParseStatus.Invalid)
             {
                 ArgsParsedError?.Invoke(Arguments);
@@ -335,12 +332,12 @@ File Version: {1}
             }
         }
 
-        protected static bool ExecuteSwitches(ILogger logger, ParsedArguments arguments)
+        protected static bool ExecuteSwitches(ILogger logger, IParsedArguments arguments)
         {
-            Assembly entryAssembly = Assembly.GetEntryAssembly();
+            Assembly? entryAssembly = Assembly.GetEntryAssembly();
             if (entryAssembly == null)
             {
-                logger.Info("Entry assembly is null for ({0})", typeof(BamConsole).Name);
+                logger.Info("Entry assembly is null for ({0})", typeof(BamConsoleContext).Name);
                 return false;
             }
             bool executed = false;
@@ -348,7 +345,7 @@ File Version: {1}
             {
                 foreach (string key in arguments.Keys)
                 {
-                    ConsoleMethod methodToInvoke = GetConsoleMethod(arguments, type, key);
+                    ConsoleMethod? methodToInvoke = GetConsoleMethod(arguments, type, key);
                     if (methodToInvoke != null)
                     {
                         CheckDebug(arguments);
@@ -361,7 +358,7 @@ File Version: {1}
             return executed;
         }
 
-        private static ConsoleMethod GetConsoleMethod(ParsedArguments arguments, Type type, string key, object instance = null)
+        private static ConsoleMethod? GetConsoleMethod(IParsedArguments arguments, Type type, string key, object instance = null)
         {
             string commandLineSwitch = key;
             string switchValue = arguments[key];
@@ -371,11 +368,19 @@ File Version: {1}
             {
                 if (method.HasCustomAttributeOfType(out ConsoleCommandAttribute consoleAction))
                 {
-                    if (consoleAction.OptionName.Or("").Equals(commandLineSwitch) ||
-                        consoleAction.OptionName.CaseAcronym().ToLowerInvariant().Or("").Equals(commandLineSwitch))
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8604 // Possible null reference argument.
+                    if (
+                        consoleAction.OptionName.Or("").Equals(commandLineSwitch) ||
+                        consoleAction.OptionName.CaseAcronym().ToLowerInvariant().Or("").Equals(commandLineSwitch) ||
+                        method.Name.CamelCase().Equals(commandLineSwitch) ||
+                        method.Name.CamelCase().CaseAcronym().ToLowerInvariant().Equals(commandLineSwitch)
+                        )
                     {
                         toExecute.Add(new ConsoleMethod(method, consoleAction, instance, switchValue));
                     }
+#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 }
             }
 
@@ -389,7 +394,7 @@ File Version: {1}
             return toExecute[0];
         }
 
-        private static void CheckDebug(ParsedArguments arguments)
+        private static void CheckDebug(IParsedArguments arguments)
         {
             if (arguments.Contains("debug"))
             {
