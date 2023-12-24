@@ -62,12 +62,22 @@ namespace Bam.Console
         /// <returns></returns>
         public T Get<T>()
         {
+            if (DependencyProvider == null)
+            {
+                throw new InvalidOperationException($"{nameof(DependencyProvider)} not set");
+            }
+
             return DependencyProvider.Get<T>();
         }
 
         [InputCommand("all", "run all listed commands")]
         public InputCommandResults RunAllItems(IMenuManager menuManager)
         {
+            if (DependencyProvider == null)
+            {
+                throw new InvalidOperationException($"{nameof(DependencyProvider)} not set");
+            }
+
             if (menuManager == null)
             {
                 throw new InvalidOperationException($"{nameof(menuManager)} not specified.");
@@ -77,6 +87,7 @@ namespace Bam.Console
             {
                 throw new InvalidOperationException($"Current menu is not set.");
             }
+
             InputCommandResults results = new InputCommandResults();
             foreach (IMenuItem item in menuManager.CurrentMenu.Items)
             {
@@ -97,10 +108,21 @@ namespace Bam.Console
             }
             return results;
         }
+
         private InputCommandResult TryInvoke(string itemDisplayName, MethodInfo method, object? instance)
         {
             try
             {
+                if (MethodArgumentProvider == null)
+                {
+                    throw new InvalidOperationException($"{nameof(MethodArgumentProvider)} not set");
+                }
+
+                if (SuccessReporter == null)
+                {
+                    throw new InvalidOperationException($"{nameof(SuccessReporter)} not set");
+                }
+
                 object? result = method.Invoke(instance, MethodArgumentProvider.GetMethodArguments(method));
                 SuccessReporter.ReportSuccess($"{itemDisplayName} completed successfully.");
                 return new InputCommandResult()
@@ -112,7 +134,7 @@ namespace Bam.Console
             catch (Exception ex)
             {
                 Exception e = ex.GetInnerException();
-                ExceptionReporter.ReportException($"{itemDisplayName} failed.", e);
+                ExceptionReporter?.ReportException($"{itemDisplayName} failed.", e);
                 return new InputCommandResult()
                 { 
                     InputName = itemDisplayName, 

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Bam.Console
 {
-    public class BamConsoleContext : IBamContext
+    public class BamConsoleContext : BamContext, IBamConsoleContext
     {
         static BamConsoleContext()
         {
@@ -124,10 +124,10 @@ namespace Bam.Console
         public static event ExitDelegate Exiting;
         public static event ExitDelegate Exited;
 
-        public ServiceRegistry ServiceRegistry
+        public override ServiceRegistry ServiceRegistry
         {
             get;
-            private set;
+            protected set;
         }
 
         public IArgumentParser ArgumentParser
@@ -182,6 +182,11 @@ namespace Bam.Console
             {
                 ValidArgumentInfo.Add(new ArgumentInfo(name.CaseAcronym().ToLowerInvariant(), allowNull, $"{description}; same as {name}", valueExample));
             }
+        }
+
+        public void Configure(Action<ServiceRegistry> configure)
+        {
+            configure(this.ServiceRegistry);
         }
 
         protected IParsedArguments Arguments

@@ -13,9 +13,14 @@ namespace Bam.Console
         public ConsoleMenuContainer(ServiceRegistry serviceRegistry)
             :base()
         {
-            this.SetDependencyProvider(serviceRegistry);
+            this.SetDependencyProvider(this.Configure(serviceRegistry));
         }
 
+        /// <summary>
+        /// Configures the specified service registry before setting as the DependencyProvider property.
+        /// </summary>
+        /// <param name="serviceRegistry">The service registry.</param>
+        /// <returns>ServiceRegistry</returns>
         public virtual ServiceRegistry Configure(ServiceRegistry serviceRegistry)
         {
             return serviceRegistry;
