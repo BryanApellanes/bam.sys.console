@@ -4,7 +4,6 @@ using Bam.Net.Configuration;
 using Bam.Net.CoreServices;
 using Bam.Net.Logging;
 using Bam.Shell;
-using Bam.Shell.Console;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,7 +25,7 @@ namespace Bam.Console
         public BamConsoleContext()
         {
             ValidArgumentInfo = new List<ArgumentInfo>();
-            ServiceRegistry = GetServiceRegistry();
+            ServiceRegistry = GetDefaultContextServiceRegistry();
         }
 
         public BamConsoleContext(ServiceRegistry serviceRegistry) : this()
@@ -184,11 +183,6 @@ namespace Bam.Console
             }
         }
 
-        public void Configure(Action<ServiceRegistry> configure)
-        {
-            configure(this.ServiceRegistry);
-        }
-
         protected IParsedArguments Arguments
         {
             get;
@@ -240,7 +234,7 @@ File Version: {1}
             Message.PrintLine(versionInfo.ToString(), ConsoleColor.Cyan);
         }
 
-        protected ServiceRegistry GetServiceRegistry()
+        public override ServiceRegistry GetDefaultContextServiceRegistry()
         {
             ServiceRegistry serviceRegistry = new ServiceRegistry()
                 .For<IBamContext>().Use(this)
@@ -263,8 +257,7 @@ File Version: {1}
                 .For<IMenuItemRunner>().Use<ConsoleMenuItemRunner>()
                 .For<ISuccessReporter>().Use<ConsoleSuccessReporter>()
                 .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();            
-                
-
+           
             serviceRegistry.For<ConsoleMenuHeaderRenderer>().Use(serviceRegistry.Get<IMenuHeaderRenderer>())
                 .For<ConsoleMenuFooterRenderer>().Use(serviceRegistry.Get<IMenuFooterRenderer>())
                 .For<ConsoleMenuInputReader>().Use(serviceRegistry.Get<IMenuInputReader>());
