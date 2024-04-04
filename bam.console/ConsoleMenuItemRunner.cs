@@ -24,7 +24,7 @@ namespace Bam.Console
         public IMenuInputMethodArgumentProvider MethodArgumentProvider { get; set; }
 
         /// <summary>
-        /// Gets the componenet that provides instances for non static menu item methods.
+        /// Gets the component that provides instances for non static menu item methods.
         /// </summary>
         public IDependencyProvider DependencyProvider { get; private set; }
 
@@ -42,6 +42,11 @@ namespace Bam.Console
 
                 object? result = menuItem.MethodInfo.Invoke(menuItem.Instance, MethodArgumentProvider.GetMethodArguments(menuItem, menuInput));
 
+                if (result is Task taskResult)
+                {
+                    taskResult.Wait();
+                }
+                
                 return new MenuItemRunResult()
                 {
                     MenuItem = menuItem,

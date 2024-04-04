@@ -39,21 +39,9 @@ namespace Bam.Console
             private set;
         }
 
-        protected IExceptionReporter? ExceptionReporter
-        {
-            get
-            {
-                return DependencyProvider?.Get<IExceptionReporter>();
-            }
-        }
+        protected IExceptionReporter? ExceptionReporter => DependencyProvider?.Get<IExceptionReporter>();
 
-        protected ISuccessReporter? SuccessReporter
-        {
-            get
-            {
-                return DependencyProvider?.Get<ISuccessReporter>();
-            }
-        }
+        protected ISuccessReporter? SuccessReporter => DependencyProvider?.Get<ISuccessReporter>();
 
         /// <summary>
         /// Get a configured instance of the specified generic type T.
@@ -106,6 +94,21 @@ namespace Bam.Console
                     results.AddResult(TryInvoke(item.DisplayName, item.MethodInfo, instance));
                 }
             }
+
+            List<Task> tasks = new List<Task>();
+            foreach (IInputCommandResult commandResult in results.Results)
+            {
+                if (commandResult.InvocationResult is Task task)
+                {
+                    tasks.Add(task);
+                }
+            }
+
+            if (tasks.Count > 0)
+            {
+                Task.WaitAll(tasks.ToArray());
+            }
+            
             return results;
         }
 
