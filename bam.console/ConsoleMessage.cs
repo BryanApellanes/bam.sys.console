@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Bam.Net;
-using Bam.Net.Logging;
+using Bam;
+using Bam.Logging;
 
 namespace Bam.Console
 {
@@ -90,7 +90,7 @@ namespace Bam.Console
 
         public void Log()
         {
-            Log(Net.Logging.Log.Default, this);
+            Log(Bam.Logging.Log.Default, this);
         }
 
         public void Log(ILogger logger)
@@ -100,7 +100,7 @@ namespace Bam.Console
 
         public static void Log(string message, params object[] messageArgs)
         {
-            Log(Net.Logging.Log.Default, message, messageArgs);
+            Log(Bam.Logging.Log.Default, message, messageArgs);
         }
 
         public static void Log(ILogger logger, string message, params object[] messageArgs)
@@ -115,7 +115,7 @@ namespace Bam.Console
 
         public static void Log(string messageSignature, ConsoleColorCombo colors, params object[] messageSignatureArgs)
         {
-            Log(Net.Logging.Log.Default, messageSignature, colors, messageSignatureArgs);
+            Log(Bam.Logging.Log.Default, messageSignature, colors, messageSignatureArgs);
         }
 
         public static void Log(ILogger logger, string messageSignature, ConsoleColorCombo colors, params object[] messageSignatureArgs)
@@ -127,7 +127,7 @@ namespace Bam.Console
         {
             foreach (ConsoleMessage consoleMessage in consoleMessages)
             {
-                Log(Net.Logging.Log.Default, consoleMessage);
+                Log(Bam.Logging.Log.Default, consoleMessage);
             }
         }
 
@@ -141,7 +141,7 @@ namespace Bam.Console
 
         public static void Log(ConsoleMessage consoleMessage)
         {
-            Log(Net.Logging.Log.Default, consoleMessage);
+            Log(Bam.Logging.Log.Default, consoleMessage);
         }
 
         static readonly HashSet<ConsoleColor> _errorBackgrounds = new HashSet<ConsoleColor>(new ConsoleColor[] { ConsoleColor.Red, ConsoleColor.DarkRed, ConsoleColor.Magenta, ConsoleColor.DarkMagenta });

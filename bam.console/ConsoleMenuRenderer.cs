@@ -1,5 +1,5 @@
 ﻿using bam.configuration;
-using Bam.Net;
+using Bam;
 using Bam.Shell;
 using System;
 using System.Collections.Generic;

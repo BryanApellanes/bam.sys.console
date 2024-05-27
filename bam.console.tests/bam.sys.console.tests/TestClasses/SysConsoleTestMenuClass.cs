@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bam.CommandLine;
-using Bam.Net;
-using Bam.Net.Logging;
+using Bam;
+using Bam.Logging;
 using Bam.Shell;
 
 namespace Bam.Console.Tests.TestClasses

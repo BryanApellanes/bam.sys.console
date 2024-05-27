@@ -1,4 +1,4 @@
-﻿using Bam.Net;
+﻿using Bam;
 using Bam.Shell;
 
 namespace Bam.Console

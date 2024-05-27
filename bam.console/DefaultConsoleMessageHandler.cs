@@ -1,7 +1,7 @@
 ﻿using System;
 using Bam.Console;
 
-namespace Bam.Net
+namespace Bam
 {
     public class DefaultConsoleMessageHandler : IConsoleMessageHandler
     {

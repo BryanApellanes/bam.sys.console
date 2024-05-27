@@ -1,4 +1,4 @@
-﻿using Bam.Net.CoreServices;
+﻿using Bam.CoreServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;

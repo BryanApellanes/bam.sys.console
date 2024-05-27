@@ -9,8 +9,8 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
-using Bam.Net;
-using Bam.Net.CommandLine;
+using Bam;
+using Bam.CommandLine;
 using Bam.Console;
 
 namespace Bam.Console

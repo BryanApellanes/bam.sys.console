@@ -1,6 +1,6 @@
 using System;
-using Bam.Net.Analytics;
-using Bam.Net.Logging;
+using Bam.Analytics;
+using Bam.Logging;
 
 namespace Bam.Console
 {
@@ -43,7 +43,7 @@ namespace Bam.Console
 
         public static void Log(string messageSignature, ConsoleColor textColor, params object[] messageSignatureArgs)
         {
-            ConsoleMessage.Log(Net.Logging.Log.Default, messageSignature, textColor, messageSignatureArgs);
+            ConsoleMessage.Log(Bam.Logging.Log.Default, messageSignature, textColor, messageSignatureArgs);
         }
 
         public static void Log(string messageSignature, ConsoleColorCombo colors, params object[] messageSignatureArgs)
