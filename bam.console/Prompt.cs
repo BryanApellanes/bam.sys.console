@@ -155,7 +155,7 @@ public class Prompt
         {
             return _provider ?? (_provider = (message, promptTxt, colors, allowQuit) =>
             {
-                Message.PrintLine($"{message} {promptTxt}", colors);
+                Message.Print($"{message} {promptTxt} ", colors);
                 Thread.Sleep(200);
                 string answer = System.Console.ReadLine();
 
