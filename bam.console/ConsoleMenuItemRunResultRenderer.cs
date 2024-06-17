@@ -10,31 +10,30 @@ namespace Bam.Console
 {
     public class ConsoleMenuItemRunResultRenderer : IMenuItemRunResultRenderer
     {
+        public Action<IMenuItemRunResult> ItemRunSucceeded { get; set; } = (menuItemRunResult) => Message.PrintLine("{0} succeeded", ConsoleColor.Green, menuItemRunResult?.MenuItem?.DisplayName ?? "run");
+
+        public Action<IMenuItemRunResult> ItemRunFailed { get; set; } = (menuItemRunResult) => Message.PrintLine("{0} failed", ConsoleColor.Green, menuItemRunResult?.MenuItem?.DisplayName ?? "run");
+
+        public Action<IMenuItemRunResult> ItemRunException { get; set; } = (menuItemRunResult) => Message.PrintLine(menuItemRunResult?.Exception?.GetMessageAndStackTrace() ?? "Stacktrace unavailable", ConsoleColor.Magenta);
+
         public void RenderMenuItemRunResult(IMenuItemRunResult menuItemRunResult)
         {
             if (menuItemRunResult != null)
             {
                 if (menuItemRunResult.Success)
                 {
-                    string name = "Item";
-                    if (menuItemRunResult.MenuItem != null && !string.IsNullOrEmpty(menuItemRunResult.MenuItem.DisplayName))
-                    {
-                        name = menuItemRunResult.MenuItem.DisplayName;
-                    }
-
-                    Message.PrintLine("{0} succeeded", ConsoleColor.Green, name);
+                    ItemRunSucceeded(menuItemRunResult);
                 }
                 else
                 {
                     if (menuItemRunResult.MenuItem != null && !string.IsNullOrEmpty(menuItemRunResult.MenuItem.DisplayName))
                     {
-                        Message.PrintLine("{0} failed", ConsoleColor.Red, menuItemRunResult.MenuItem.DisplayName);
+                        ItemRunFailed(menuItemRunResult);
                     }
 
                     if (menuItemRunResult.Exception != null && !string.IsNullOrEmpty(menuItemRunResult.Exception.StackTrace))
                     {
-
-                        Message.PrintLine(menuItemRunResult.Exception.GetMessageAndStackTrace(), ConsoleColor.Magenta);
+                        ItemRunException(menuItemRunResult);
                     }
                 }
             }

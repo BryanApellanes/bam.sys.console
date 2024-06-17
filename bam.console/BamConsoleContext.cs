@@ -129,37 +129,13 @@ namespace Bam.Console
             protected set;
         }
 
-        public IArgumentParser ArgumentParser
-        {
-            get
-            {
-                return ServiceRegistry.Get<IArgumentParser>();
-            }
-        }
+        public IArgumentParser ArgumentParser => ServiceRegistry.Get<IArgumentParser>();
 
-        public IConfigurationProvider ConfigurationProvider
-        {
-            get
-            {
-                return ServiceRegistry.Get<IConfigurationProvider>();
-            }
-        }
+        public override IConfigurationProvider ConfigurationProvider => ServiceRegistry.Get<IConfigurationProvider>();
 
-        public IApplicationNameProvider ApplicationNameProvider
-        {
-            get
-            {
-                return ServiceRegistry.Get<IApplicationNameProvider>();
-            }
-        }
+        public override IApplicationNameProvider ApplicationNameProvider => ServiceRegistry.Get<IApplicationNameProvider>();
 
-        public ILogger Logger
-        {
-            get
-            {
-                return ServiceRegistry.Get<ILogger>();
-            }
-        }
+        public override ILogger Logger => ServiceRegistry.Get<ILogger>();
 
         public IMenuManager MenuManager
         {
@@ -251,7 +227,7 @@ File Version: {1}
                 .For<IMenuRenderer>().Use<ConsoleMenuRenderer>()
                 .For<IMenuInputMethodArgumentProvider>().Use<MenuInputMethodArgumentProvider>()
                 .For<ITypedArgumentProvider>().Use<StringArgumentProvider>()
-                .For<IMenuItemRunResultRenderer>().Use<ConsoleMenuItemRunResultRenderer>()
+                .For<IMenuItemRunResultRenderer>().Use(new ConsoleMenuItemRunResultRenderer())
                 .For<IInputCommandResultRenderer>().Use<ConsoleInputCommandResultRenderer>()
                 .For<IMenuItemSelector>().Use<MenuItemSelector>()
                 .For<IMenuItemRunner>().Use<ConsoleMenuItemRunner>()
