@@ -135,6 +135,31 @@ Select an option below:
  icm > 
 ```
 
+Typing `input command one` at the menu prompt results in the following output.
+
+```
+Input Command Menu
+
+Select an option below:
+> 1. [:mi] MenuItem
+-----------------------------------
+[:icm] Input Command Menu
+-----------------------------------
+"input command one" -- Execute the input command
+-----------------------------------
+ icm > input command one
+
+******************************
+
+Executed InputCommandOne
+Calling MenuItem method from input command...
+Execute MenuItem
+
+ > command 'input command one' -->  succeeded
+
+******************************
+```
+
 ## ConsoleCommand (Attribute)
 ```csharp
 [ConsoleCommand]
