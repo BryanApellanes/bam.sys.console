@@ -51,9 +51,9 @@ namespace Bam.Console
 
             MenuSpec menuSpec = menuManager.CurrentMenu.GetSpec();
             InputCommands inputOptions = GetInputOptions(menuSpec.ContainerType);
-            if (inputOptions.Commands.ContainsKey(optionName))
+            if (inputOptions.Commands.TryGetValue(optionName, out var command))
             {
-                InputCommandResult optionResult = InvokeOption(inputOptions.Commands[optionName], arguments);
+                InputCommandResult optionResult = InvokeOption(command, arguments);
                 results.AddResult(optionResult);
                 return true;
             }
