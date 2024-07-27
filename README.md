@@ -3,7 +3,7 @@
 Simple menuing system for dotnet console apps.
 
 ## Menu (Attribute)
-Adorn a class with the `[Menu]` attribute and specify the attribute type that adorns the methods you wish to show in that menu.
+Adorn a class with the `[Menu]` attribute and specify the attribute type that adorns the methods you wish to show in that menu.  In the following example the methods adorned with the `MenuItem` attribute are rendered items in the menu.
 
 ```csharp
 [Menu<MenuItemAttribute>]
@@ -161,10 +161,26 @@ Execute MenuItem
 ```
 
 ## ConsoleCommand (Attribute)
+Adorn methods with the `ConsoleCommand` attribute that you want to be able to execute from the command line.
+
+
 ```csharp
 [ConsoleCommand]
 public void MethodName(string value, string value2)
 {
-    Console.WriteLine("You entered {0} for value and {1} for value 2", value, value2)
+    Console.WriteLine("You entered {0} for value and {1} for value 2", value, value2);
 }
+```
+
+You can execute the preceding method from the command line using the following command.
+
+```bash
+{exeName} --methodName --value=value1 "--value2=another value"
+```
+
+The preceding command results in the following output.
+
+```
+You entered value1 for value and another value for value 2
+[Time(7/27/2024 4:31:38 PM ms 410)]Thread=#1(1)~~App=bam.console.tests~~PID=131464~~Utc=7/27/2024::9:31 PM~~Executed methodName: Method Name
 ```

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.DirectoryServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +38,12 @@ namespace Bam.Console.Tests.TestClasses
         public void UseConsole(string value, string value2)
         {
             System.Console.WriteLine("This is a console command with 2 inputs. You specified '{0}' for value and '{1}' for value2", value, value2);
+        }
+        
+        [ConsoleCommand]
+        public void MethodName(string value, string value2)
+        {
+            System.Console.WriteLine("You entered {0} for value and {1} for value 2", value, value2);
         }
         
         [MenuItem("Menu item one")]
