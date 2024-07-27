@@ -93,6 +93,8 @@ namespace Bam.Console
                 Exit();
             }
 
+            // If command line arguments were specified but not the interactive switch then
+            // execute the associated command switches
             if (Current.Arguments.Length > 0 && !Current.Arguments.Contains("i"))
             {
                 if (ExecuteSwitches(Current.Logger, Current.Arguments))
@@ -111,7 +113,7 @@ namespace Bam.Console
             Exited?.Invoke(code);
         }
 
-        public static BamConsoleContext Current
+        public new static BamConsoleContext Current
         {
             get;
             private set;
@@ -137,13 +139,7 @@ namespace Bam.Console
 
         public override ILogger Logger => ServiceRegistry.Get<ILogger>();
 
-        public IMenuManager MenuManager
-        {
-            get
-            {
-                return ServiceRegistry.Get<IMenuManager>();
-            }
-        }
+        public IMenuManager MenuManager => ServiceRegistry.Get<IMenuManager>();
 
         public void AddValidArgument(string name, string? description = null)
         {
@@ -159,7 +155,7 @@ namespace Bam.Console
             }
         }
 
-        protected IParsedArguments Arguments
+        public IParsedArguments Arguments
         {
             get;
             set;
@@ -190,13 +186,13 @@ File Version: {1}
             Thread.Sleep(30);
         }
 
-        public static void Version(Assembly assembly)
+        public static void Version(Assembly? assembly)
         {
-            FileVersionInfo fv = FileVersionInfo.GetVersionInfo(assembly.Location);
-            AssemblyCommitAttribute commitAttribute = assembly.GetCustomAttribute<AssemblyCommitAttribute>();
+            FileVersionInfo fv = FileVersionInfo.GetVersionInfo(assembly?.Location);
+            AssemblyCommitAttribute? commitAttribute = assembly.GetCustomAttribute<AssemblyCommitAttribute>();
             StringBuilder versionInfo = new StringBuilder();
-            versionInfo.AppendFormat("AssemblyVersion: {0}\r\n", assembly.GetName().Version.ToString());
-            versionInfo.AppendFormat("AssemblyFileVersion: {0}\r\n", fv.FileVersion.ToString());
+            versionInfo.AppendFormat("AssemblyVersion: {0}\r\n", assembly.GetName().Version?.ToString());
+            versionInfo.AppendFormat("AssemblyFileVersion: {0}\r\n", fv.FileVersion?.ToString());
             if (commitAttribute != null)
             {
                 versionInfo.AppendFormat("Commit: {0}\r\n", commitAttribute.Commit);
@@ -232,7 +228,8 @@ File Version: {1}
                 .For<IMenuItemSelector>().Use<MenuItemSelector>()
                 .For<IMenuItemRunner>().Use<ConsoleMenuItemRunner>()
                 .For<ISuccessReporter>().Use<ConsoleSuccessReporter>()
-                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();            
+                .For<IConsoleMethodParameterProvider>().Use<CommandLineArgumentsConsoleMethodParameterProvider>()
+                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();
            
             serviceRegistry.For<ConsoleMenuHeaderRenderer>().Use(serviceRegistry.Get<IMenuHeaderRenderer>())
                 .For<ConsoleMenuFooterRenderer>().Use(serviceRegistry.Get<IMenuFooterRenderer>())
@@ -264,7 +261,7 @@ File Version: {1}
         }
 
         /// <summary>
-        /// Reads the methods of the specified type and adds those addorned with <see cref="ConsoleCommandAttribute" /> as valid command line switches.
+        /// Reads the methods of the specified type and adds those adorned with <see cref="ConsoleCommandAttribute" /> as valid command line switches.
         /// </summary>
         /// <param name="type"></param>
         protected void AddSwitches(Type type)
@@ -311,7 +308,7 @@ File Version: {1}
             Assembly? entryAssembly = Assembly.GetEntryAssembly();
             if (entryAssembly == null)
             {
-                logger.Info("Entry assembly is null for ({0})", typeof(BamConsoleContext).Name);
+                logger.Info("Entry assembly is null for ({0})", nameof(BamConsoleContext));
                 return false;
             }
             bool executed = false;
@@ -358,7 +355,7 @@ File Version: {1}
                 }
             }
 
-    (toExecute.Count > 1).IsFalse("Multiple ConsoleActions found with the specified command line switch: {0}".Format(commandLineSwitch));
+            (toExecute.Count > 1).IsFalse("Multiple ConsoleActions found with the specified command line switch: {0}".Format(commandLineSwitch));
 
             if (toExecute.Count == 0)
             {

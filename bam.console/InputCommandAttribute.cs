@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Bam.Console
 {
     /// <summary>
-    /// Used to addorn methods that may be executed by an name at a bam menu prompt.
+    /// Used to adorn methods that may be executed by name at a bam menu prompt.
     /// </summary>
     public class InputCommandAttribute : Attribute
     {

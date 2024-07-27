@@ -10,37 +10,37 @@ namespace Bam.Console
 {
     public class ArgumentInfoHash
     {
-        Dictionary<string, ArgumentInfo> innerHash;
+        readonly Dictionary<string, ArgumentInfo> _innerHash;
         public ArgumentInfoHash(ArgumentInfo[] argumentInfo)
         {
-            innerHash = new Dictionary<string, ArgumentInfo>(argumentInfo.Length);
+            _innerHash = new Dictionary<string, ArgumentInfo>(argumentInfo.Length);
             foreach (ArgumentInfo info in argumentInfo)
             {
-                if (innerHash.ContainsKey(info.Name))
-                    innerHash[info.Name] = info;
+                if (_innerHash.ContainsKey(info.Name))
+                    _innerHash[info.Name] = info;
                 else
-                    innerHash.Add(info.Name, info);
+                    _innerHash.Add(info.Name, info);
             }
         }
         public string[] ArgumentNames
         {
             get
             {
-                List<string> retval = new List<string>(innerHash.Keys.Count);
-                foreach (string name in innerHash.Keys)
+                List<string> returnValue = new List<string>(_innerHash.Keys.Count);
+                foreach (string name in _innerHash.Keys)
                 {
-                    retval.Add(name);
+                    returnValue.Add(name);
                 }
-                return retval.ToArray();
+                return returnValue.ToArray();
             }
         }
 
-        public ArgumentInfo this[string argumentName]
+        public ArgumentInfo? this[string argumentName]
         {
             get
             {
-                if (innerHash.ContainsKey(argumentName))
-                    return innerHash[argumentName];
+                if (_innerHash.ContainsKey(argumentName))
+                    return _innerHash[argumentName];
 
                 return null;
             }

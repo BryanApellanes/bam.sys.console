@@ -45,8 +45,13 @@ namespace Bam.Console
             string[] arguments = new string[] { };
             if (commands.Length > 1)
             {
-                arguments = new string[commands.Length - 1];
-                commands.CopyTo(arguments, 1);
+                List<string> argList = new List<string>();
+                for (int i = 1; i < commands.Length; i++)
+                {
+                    argList.Add(commands[i]);
+                }
+
+                arguments = argList.ToArray();
             }
 
             MenuSpec menuSpec = menuManager.CurrentMenu.GetSpec();
@@ -54,6 +59,12 @@ namespace Bam.Console
             if (inputOptions.Commands.TryGetValue(optionName, out var command))
             {
                 InputCommandResult optionResult = InvokeOption(command, arguments);
+                results.AddResult(optionResult);
+                return true;
+            }
+            else if (inputOptions.Commands.TryGetValue(menuInput.Value, out var commandOption))
+            {
+                InputCommandResult optionResult = InvokeOption(commandOption, arguments);
                 results.AddResult(optionResult);
                 return true;
             }
