@@ -12,7 +12,7 @@ namespace Bam.Console
         public ConsoleMenuInputReader(IBamContext bamContext)
         {
             BamContext = bamContext;
-            ExitKey = MenuManager.DefaultExitKey;
+            ExitKey = MenuManager.ExitKey;
             Input = new StringBuilder();
         }
 

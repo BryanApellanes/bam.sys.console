@@ -33,38 +33,109 @@ namespace Bam.Console
             ServiceRegistry = serviceRegistry;
         }
 
-        public static void Main(string[] args)
+        public void Main(string[] args)
         {
             Main(args, MenuSpecs.LoadList.ToArray());
         }
 
-        public static void Main(string[] args, params Assembly[] assemblies)
+        public void Main(string[] args, params Assembly[] assemblies)
         {
             Main(args, MenuSpecs.Scan(assemblies).ToArray());
         }
 
-        public static void Main(string[] args, params MenuSpecs[] menuSpecs)
+        public void Main(string[] args, params MenuSpecs[] menuSpecs)
+        {
+            AddSwitches();
+            AddConfigurationSwitches();
+            MenuSpecs.LoadList = menuSpecs;
+            Main(args, () => { });
+        }
+        
+        public static void StaticMain(string[] args)
+        {
+            StaticMain(args, MenuSpecs.LoadList.ToArray());
+        }
+
+        public static void StaticMain(string[] args, params Assembly[] assemblies)
+        {
+            StaticMain(args, MenuSpecs.Scan(assemblies).ToArray());
+        }
+
+        public static void StaticMain(string[] args, params MenuSpecs[] menuSpecs)
         {
             Current.AddSwitches();
             Current.AddConfigurationSwitches();
             MenuSpecs.LoadList = menuSpecs;
-            Main(args, () => { });
+            StaticMain(args, () => { });
         }
 
-        public static async void Main(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler = null)
+        public static void StaticMain(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler = null)
         {
             if (parseErrorHandler == null)
             {
                 parseErrorHandler = (a) => throw new ArgumentException(a.Message);
             }
 
-            Initialize(args, preInit, parseErrorHandler);
+            StaticInit(args, preInit, parseErrorHandler);
 
             Current.MenuManager.StartInputOutputLoop();
             System.Console.ReadLine();
         }
 
-        protected static void Initialize(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler)
+        public void Main(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler = null)
+        {
+            if (parseErrorHandler == null)
+            {
+                parseErrorHandler = (a) => throw new ArgumentException(a.Message);
+            }
+
+            Init(args, preInit, parseErrorHandler);
+
+            this.MenuManager.StartInputOutputLoop();
+            System.Console.ReadLine();
+        }
+
+        protected void Init(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler)
+        {
+            this.ArgsParsedError += parseErrorHandler;
+
+            preInit();
+
+            this.AddValidArgument("?", true, description: "Show usage");
+            this.AddValidArgument("v", true, description: "Show version information");
+            this.AddValidArgument("i", true, description: "Run interactively");
+
+            // TODO: extract/encapsulate a IConsoleActionProvider discovery mechanism 
+            this.AddValidArgument("ut", true, description: "Run all unit tests");
+            this.AddValidArgument("it", true, description: "Run all integration tests");
+            this.AddValidArgument("spec", true, description: "Run all specification tests");
+            // -/ TODO: extract/encapsulate a IConsoleActionProvider discovery mechanism 
+
+            this.ParseArgs(args);
+
+            if (this.Arguments.Contains("?"))
+            {
+                this.Usage(Assembly.GetExecutingAssembly());
+                Exit();
+            }
+            else if (this.Arguments.Contains("v"))
+            {
+                Version(Assembly.GetEntryAssembly());
+                Exit();
+            }
+
+            // If command line arguments were specified but not the interactive switch then
+            // execute the associated command switches
+            if (this.Arguments.Length > 0 && !this.Arguments.Contains("i"))
+            {
+                if (ExecuteSwitches(this.Logger, this.Arguments))
+                {
+                    Exit(0);
+                }
+            }
+        }
+        
+        protected static void StaticInit(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler)
         {
             Current.ArgsParsedError += parseErrorHandler;
 
@@ -116,7 +187,7 @@ namespace Bam.Console
         public new static BamConsoleContext Current
         {
             get;
-            private set;
+            set;
         }
 
         public event ConsoleArgsParsedDelegate ArgsParsed;
@@ -128,7 +199,7 @@ namespace Bam.Console
         public override ServiceRegistry ServiceRegistry
         {
             get;
-            protected set;
+            set;
         }
 
         public IArgumentParser ArgumentParser => ServiceRegistry.Get<IArgumentParser>();
@@ -139,7 +210,11 @@ namespace Bam.Console
 
         public override ILogger Logger => ServiceRegistry.Get<ILogger>();
 
-        public IMenuManager MenuManager => ServiceRegistry.Get<IMenuManager>();
+        public IMenuManager MenuManager
+        {
+            get => ServiceRegistry.Get<IMenuManager>();
+            set => ServiceRegistry.Set(value);
+        }
 
         public void AddValidArgument(string name, string? description = null)
         {
@@ -206,6 +281,11 @@ File Version: {1}
             Message.PrintLine(versionInfo.ToString(), ConsoleColor.Cyan);
         }
 
+        public static ServiceRegistry GetDefaultServiceRegistry()
+        {
+            return new BamConsoleContext().ServiceRegistry;
+        }
+        
         public override ServiceRegistry GetDefaultContextServiceRegistry()
         {
             ServiceRegistry serviceRegistry = new ServiceRegistry()

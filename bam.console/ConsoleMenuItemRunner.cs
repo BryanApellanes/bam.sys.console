@@ -24,7 +24,7 @@ namespace Bam.Console
         public IMenuInputMethodArgumentProvider MethodArgumentProvider { get; set; }
 
         /// <summary>
-        /// Gets the component that provides instances for non static menu item methods.
+        /// Gets the component that provides instances for non-static menu item methods.
         /// </summary>
         public IDependencyProvider DependencyProvider { get; private set; }
 
