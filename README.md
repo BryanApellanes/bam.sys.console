@@ -2,6 +2,19 @@
 
 Simple menuing system for dotnet console apps.
 
+## Entry Point
+To begin using the `Bam.Console` menuing system define your main entry point like the following.
+
+```csharp
+   class Program
+    {
+        static void Main(string[] args)
+        {
+            BamConsoleContext.Main(args);
+        }
+    }
+```
+
 ## Menu (Attribute)
 Adorn a class with the `[Menu]` attribute and specify the attribute type that adorns the methods you wish to show in that menu.  In the following example the methods adorned with the `MenuItem` attribute are rendered items in the menu.
 
