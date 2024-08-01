@@ -4,7 +4,7 @@ using Bam.Shell;
 namespace Bam.Console
 {
     /// <summary>
-    /// Used to addorn methods that may be executed by a command line switch.
+    /// Used to adorn methods that may be executed by a command line switch.
     /// </summary>
     public class ConsoleCommandAttribute : MenuItemAttribute
     {

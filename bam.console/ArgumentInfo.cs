@@ -66,7 +66,7 @@ namespace Bam.Console
                     continue;
                 }
 
-                string name = arg.TruncateFront(prefix.Length).ReadUntil(':');
+                string name = arg.TruncateFront(prefix.Length).ReadUntil(ParsedArguments.ValueDivider);
                 results.Add(new ArgumentInfo(name, allowNulls));
             }
 

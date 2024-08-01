@@ -33,38 +33,109 @@ namespace Bam.Console
             ServiceRegistry = serviceRegistry;
         }
 
-        public static void Main(string[] args)
+        public void Main(string[] args)
         {
             Main(args, MenuSpecs.LoadList.ToArray());
         }
 
-        public static void Main(string[] args, params Assembly[] assemblies)
+        public void Main(string[] args, params Assembly[] assemblies)
         {
             Main(args, MenuSpecs.Scan(assemblies).ToArray());
         }
 
-        public static void Main(string[] args, params MenuSpecs[] menuSpecs)
+        public void Main(string[] args, params MenuSpecs[] menuSpecs)
+        {
+            AddSwitches();
+            AddConfigurationSwitches();
+            MenuSpecs.LoadList = menuSpecs;
+            Main(args, () => { });
+        }
+        
+        public static void StaticMain(string[] args)
+        {
+            StaticMain(args, MenuSpecs.LoadList.ToArray());
+        }
+
+        public static void StaticMain(string[] args, params Assembly[] assemblies)
+        {
+            StaticMain(args, MenuSpecs.Scan(assemblies).ToArray());
+        }
+
+        public static void StaticMain(string[] args, params MenuSpecs[] menuSpecs)
         {
             Current.AddSwitches();
             Current.AddConfigurationSwitches();
             MenuSpecs.LoadList = menuSpecs;
-            Main(args, () => { });
+            StaticMain(args, () => { });
         }
 
-        public static async void Main(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler = null)
+        public static void StaticMain(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler = null)
         {
             if (parseErrorHandler == null)
             {
                 parseErrorHandler = (a) => throw new ArgumentException(a.Message);
             }
 
-            Initialize(args, preInit, parseErrorHandler);
+            StaticInit(args, preInit, parseErrorHandler);
 
             Current.MenuManager.StartInputOutputLoop();
             System.Console.ReadLine();
         }
 
-        protected static void Initialize(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler)
+        public void Main(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler = null)
+        {
+            if (parseErrorHandler == null)
+            {
+                parseErrorHandler = (a) => throw new ArgumentException(a.Message);
+            }
+
+            Init(args, preInit, parseErrorHandler);
+
+            this.MenuManager.StartInputOutputLoop();
+            System.Console.ReadLine();
+        }
+
+        protected void Init(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler)
+        {
+            this.ArgsParsedError += parseErrorHandler;
+
+            preInit();
+
+            this.AddValidArgument("?", true, description: "Show usage");
+            this.AddValidArgument("v", true, description: "Show version information");
+            this.AddValidArgument("i", true, description: "Run interactively");
+
+            // TODO: extract/encapsulate a IConsoleActionProvider discovery mechanism 
+            this.AddValidArgument("ut", true, description: "Run all unit tests");
+            this.AddValidArgument("it", true, description: "Run all integration tests");
+            this.AddValidArgument("spec", true, description: "Run all specification tests");
+            // -/ TODO: extract/encapsulate a IConsoleActionProvider discovery mechanism 
+
+            this.ParseArgs(args);
+
+            if (this.Arguments.Contains("?"))
+            {
+                this.Usage(Assembly.GetExecutingAssembly());
+                Exit();
+            }
+            else if (this.Arguments.Contains("v"))
+            {
+                Version(Assembly.GetEntryAssembly());
+                Exit();
+            }
+
+            // If command line arguments were specified but not the interactive switch then
+            // execute the associated command switches
+            if (this.Arguments.Length > 0 && !this.Arguments.Contains("i"))
+            {
+                if (ExecuteSwitches(this.Logger, this.Arguments))
+                {
+                    Exit(0);
+                }
+            }
+        }
+        
+        protected static void StaticInit(string[] args, Action preInit, ConsoleArgsParsedDelegate? parseErrorHandler)
         {
             Current.ArgsParsedError += parseErrorHandler;
 
@@ -93,6 +164,8 @@ namespace Bam.Console
                 Exit();
             }
 
+            // If command line arguments were specified but not the interactive switch then
+            // execute the associated command switches
             if (Current.Arguments.Length > 0 && !Current.Arguments.Contains("i"))
             {
                 if (ExecuteSwitches(Current.Logger, Current.Arguments))
@@ -111,10 +184,10 @@ namespace Bam.Console
             Exited?.Invoke(code);
         }
 
-        public static BamConsoleContext Current
+        public new static BamConsoleContext Current
         {
             get;
-            private set;
+            set;
         }
 
         public event ConsoleArgsParsedDelegate ArgsParsed;
@@ -126,7 +199,7 @@ namespace Bam.Console
         public override ServiceRegistry ServiceRegistry
         {
             get;
-            protected set;
+            set;
         }
 
         public IArgumentParser ArgumentParser => ServiceRegistry.Get<IArgumentParser>();
@@ -139,10 +212,8 @@ namespace Bam.Console
 
         public IMenuManager MenuManager
         {
-            get
-            {
-                return ServiceRegistry.Get<IMenuManager>();
-            }
+            get => ServiceRegistry.Get<IMenuManager>();
+            set => ServiceRegistry.Set(value);
         }
 
         public void AddValidArgument(string name, string? description = null)
@@ -159,7 +230,7 @@ namespace Bam.Console
             }
         }
 
-        protected IParsedArguments Arguments
+        public IParsedArguments Arguments
         {
             get;
             set;
@@ -190,13 +261,13 @@ File Version: {1}
             Thread.Sleep(30);
         }
 
-        public static void Version(Assembly assembly)
+        public static void Version(Assembly? assembly)
         {
-            FileVersionInfo fv = FileVersionInfo.GetVersionInfo(assembly.Location);
-            AssemblyCommitAttribute commitAttribute = assembly.GetCustomAttribute<AssemblyCommitAttribute>();
+            FileVersionInfo fv = FileVersionInfo.GetVersionInfo(assembly?.Location);
+            AssemblyCommitAttribute? commitAttribute = assembly.GetCustomAttribute<AssemblyCommitAttribute>();
             StringBuilder versionInfo = new StringBuilder();
-            versionInfo.AppendFormat("AssemblyVersion: {0}\r\n", assembly.GetName().Version.ToString());
-            versionInfo.AppendFormat("AssemblyFileVersion: {0}\r\n", fv.FileVersion.ToString());
+            versionInfo.AppendFormat("AssemblyVersion: {0}\r\n", assembly.GetName().Version?.ToString());
+            versionInfo.AppendFormat("AssemblyFileVersion: {0}\r\n", fv.FileVersion?.ToString());
             if (commitAttribute != null)
             {
                 versionInfo.AppendFormat("Commit: {0}\r\n", commitAttribute.Commit);
@@ -210,6 +281,11 @@ File Version: {1}
             Message.PrintLine(versionInfo.ToString(), ConsoleColor.Cyan);
         }
 
+        public static ServiceRegistry GetDefaultServiceRegistry()
+        {
+            return new BamConsoleContext().ServiceRegistry;
+        }
+        
         public override ServiceRegistry GetDefaultContextServiceRegistry()
         {
             ServiceRegistry serviceRegistry = new ServiceRegistry()
@@ -232,7 +308,8 @@ File Version: {1}
                 .For<IMenuItemSelector>().Use<MenuItemSelector>()
                 .For<IMenuItemRunner>().Use<ConsoleMenuItemRunner>()
                 .For<ISuccessReporter>().Use<ConsoleSuccessReporter>()
-                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();            
+                .For<IConsoleMethodParameterProvider>().Use<CommandLineArgumentsConsoleMethodParameterProvider>()
+                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();
            
             serviceRegistry.For<ConsoleMenuHeaderRenderer>().Use(serviceRegistry.Get<IMenuHeaderRenderer>())
                 .For<ConsoleMenuFooterRenderer>().Use(serviceRegistry.Get<IMenuFooterRenderer>())
@@ -264,7 +341,7 @@ File Version: {1}
         }
 
         /// <summary>
-        /// Reads the methods of the specified type and adds those addorned with <see cref="ConsoleCommandAttribute" /> as valid command line switches.
+        /// Reads the methods of the specified type and adds those adorned with <see cref="ConsoleCommandAttribute" /> as valid command line switches.
         /// </summary>
         /// <param name="type"></param>
         protected void AddSwitches(Type type)
@@ -311,7 +388,7 @@ File Version: {1}
             Assembly? entryAssembly = Assembly.GetEntryAssembly();
             if (entryAssembly == null)
             {
-                logger.Info("Entry assembly is null for ({0})", typeof(BamConsoleContext).Name);
+                logger.Info("Entry assembly is null for ({0})", nameof(BamConsoleContext));
                 return false;
             }
             bool executed = false;
@@ -358,7 +435,7 @@ File Version: {1}
                 }
             }
 
-    (toExecute.Count > 1).IsFalse("Multiple ConsoleActions found with the specified command line switch: {0}".Format(commandLineSwitch));
+            (toExecute.Count > 1).IsFalse("Multiple ConsoleActions found with the specified command line switch: {0}".Format(commandLineSwitch));
 
             if (toExecute.Count == 0)
             {

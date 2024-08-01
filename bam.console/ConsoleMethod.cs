@@ -41,7 +41,7 @@ namespace Bam.Console
         /// </summary>
         public string SwitchValue { get; set; }
         public MethodInfo Method { get; set; }
-        public object[] Parameters { get; set; }
+        public object[]? Parameters { get; set; }
 
         object? _provider;
         public object? Provider
@@ -61,6 +61,20 @@ namespace Bam.Console
             set => _provider = value;
         }
 
+        private IConsoleMethodParameterProvider? _parameterProvider;
+        public IConsoleMethodParameterProvider? ParameterProvider
+        {
+            get
+            {
+                if (_parameterProvider == null && Method.GetParameters().Any())
+                {
+                    _parameterProvider = BamConsoleContext.Current.ServiceRegistry.Get<IConsoleMethodParameterProvider>();
+                }
+
+                return _parameterProvider;
+            }
+        }
+        
         public string Information
         {
             get
@@ -80,7 +94,7 @@ namespace Bam.Console
 
         public override string ToString()
         {
-            return $"{Method.DeclaringType.Namespace}.{Method.DeclaringType.Name}.{Method.Name}: ({Information})";
+            return $"{Method.DeclaringType?.Namespace}.{Method.DeclaringType?.Name}.{Method.Name}: ({Information})";
         }
 
         public Attribute Attribute { get; set; }
@@ -101,14 +115,22 @@ namespace Bam.Console
         }
 
         [DebuggerStepThrough]
-        public object Invoke()
+        public object? Invoke()
         {
-            object result = null;
+            object? result = null;
             try
             {
                 if (!Method.IsStatic && Provider == null)
                 {
-                    Provider = Method.DeclaringType.Construct();
+                    if (Method.DeclaringType != null) Provider = Method.DeclaringType.Construct();
+                }
+
+                if (Parameters == null || Parameters.Length == 0)
+                {
+                    if (Method.GetParameters().Any())
+                    {
+                        Parameters = ParameterProvider?.GetMethodParameters(Method);
+                    }
                 }
                 result = Method.Invoke(Provider, Parameters);
             }

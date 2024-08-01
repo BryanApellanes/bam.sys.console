@@ -13,12 +13,13 @@ namespace Bam.Console
 
     /// <summary>
     /// Class used to parse command line arguments.  All arguments are 
-    /// assumed to be in the format /&lt;name&gt;:&lt;value&gt; or an ArgumentException is thrown 
+    /// assumed to be in the format --&lt;name&gt;:&lt;value&gt; or an ArgumentException is thrown 
     /// during parsing.
     /// </summary>
     public class ParsedArguments : IParsedArguments
     {
         public const string DefaultArgPrefix = "--";
+        public const char ValueDivider = '=';
 
         public ParsedArguments(string[] args, string[] validArgNames)
             : this(args, ArgumentInfo.FromStringArray(validArgNames))
@@ -63,23 +64,23 @@ namespace Bam.Console
                 }
                 else
                 {
-                    string[] nameValue = arg.Substring(argPrefix.Length, arg.Length - argPrefix.Length).Split(new string[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] nameValue = arg.Substring(argPrefix.Length, arg.Length - argPrefix.Length).Split(new string[] { ValueDivider.ToString() }, StringSplitOptions.RemoveEmptyEntries);
                     string name = string.Empty;
                     if (nameValue.Length > 0)
                     {
                         name = nameValue[0];
                     }
 
-                    // allow ":" in arg value
+                    // allow {ValueDivider} in arg value
                     if (nameValue.Length > 2)
                     {
-                        int startIndex = arg.IndexOf(":") + 1;
+                        int startIndex = arg.IndexOf(ValueDivider, StringComparison.Ordinal) + 1;
                         nameValue = new string[] { name, arg.Substring(startIndex, arg.Length - startIndex) };
                     }
 
                     if (nameValue.Length == 1 && validArguments[name] != null)
                     {
-                        if (validArguments[name].AllowNullValue)
+                        if (validArguments[name]!.AllowNullValue)
                         {
                             parsedArguments.Add(name, "");
                         }
