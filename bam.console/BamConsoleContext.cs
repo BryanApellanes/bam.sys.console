@@ -1,5 +1,4 @@
-﻿using Bam.Commandline.Menu;
-using Bam;
+﻿using Bam;
 using Bam.Configuration;
 using Bam.CoreServices;
 using Bam.Logging;
@@ -293,38 +292,10 @@ File Version: {1}
                 .For<IArgumentParser>().Use<DefaultArgumentParser>()
                 .For<IConfigurationProvider>().Use(new DefaultConfigurationProvider())
                 .For<IApplicationNameProvider>().Use(new ProcessApplicationNameProvider())
-                .For<ILogger>().Use(new ConsoleLogger())
-                .For<IMenuHeaderRenderer>().Use<ConsoleMenuHeaderRenderer>()
-                .For<IMenuFooterRenderer>().Use<ConsoleMenuFooterRenderer>()
-                .For<IMenuInputCommandRenderer>().Use<ConsoleMenuInputCommandRenderer>()
-                .For<IMenuProvider>().Use<ConsoleMenuProvider>()
-                .For<IMenuInputReader>().Use<ConsoleMenuInputReader>()
-                .For<IMenuItemProvider>().Use<MenuItemProvider>()
-                .For<IMenuRenderer>().Use<ConsoleMenuRenderer>()
-                .For<IMenuInputMethodArgumentProvider>().Use<MenuInputMethodArgumentProvider>()
-                .For<ITypedArgumentProvider>().Use<StringArgumentProvider>()
-                .For<IMenuItemRunResultRenderer>().Use(new ConsoleMenuItemRunResultRenderer())
-                .For<IInputCommandResultRenderer>().Use<ConsoleInputCommandResultRenderer>()
-                .For<IMenuItemSelector>().Use<MenuItemSelector>()
-                .For<IMenuItemRunner>().Use<ConsoleMenuItemRunner>()
-                .For<ISuccessReporter>().Use<ConsoleSuccessReporter>()
-                .For<IConsoleMethodParameterProvider>().Use<CommandLineArgumentsConsoleMethodParameterProvider>()
-                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();
-           
-            serviceRegistry.For<ConsoleMenuHeaderRenderer>().Use(serviceRegistry.Get<IMenuHeaderRenderer>())
-                .For<ConsoleMenuFooterRenderer>().Use(serviceRegistry.Get<IMenuFooterRenderer>())
-                .For<ConsoleMenuInputReader>().Use(serviceRegistry.Get<IMenuInputReader>());
-
-            serviceRegistry
-                .For<Services.IDependencyProvider>().Use(serviceRegistry)
-                .For<ServiceRegistry>().Use(serviceRegistry)
-                .For<IMenuInputCommandInterpreter>().Use<DefaultMenuInputCommandInterpreter>()
-                .For<IMenuManager>().UseSingleton<MenuManager>();
-
-
-            serviceRegistry
-                .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();
-
+                .For<ILogger>().Use(new ConsoleLogger());
+            
+            serviceRegistry.CombineWith(ConsoleMenuOptions.GetServiceRegistry<StringArgumentProvider>());
+            
             return serviceRegistry;
         }
 

@@ -10,6 +10,12 @@ public class ConsoleMenuOptions : MenuOptions
     {
     }
 
+    public static ConsoleMenuOptions Get<TypedArgumentProviderType>(IMenuItemRunResultRenderer? menuItemRunResultRenderer = null)
+        where TypedArgumentProviderType : ITypedArgumentProvider
+    {
+        return GetServiceRegistry<TypedArgumentProviderType>(menuItemRunResultRenderer).Get<ConsoleMenuOptions>();
+    }
+    
     public static ServiceRegistry GetServiceRegistry<TypedArgumentProviderType>(IMenuItemRunResultRenderer? menuItemRunResultRenderer = null) where TypedArgumentProviderType: ITypedArgumentProvider
     {
         ServiceRegistry registry = new ServiceRegistry();
@@ -32,7 +38,8 @@ public class ConsoleMenuOptions : MenuOptions
             .For<IMenuItemRunner>().Use<ConsoleMenuItemRunner>()
             .For<ISuccessReporter>().Use<ConsoleSuccessReporter>()
             .For<IConsoleMethodParameterProvider>().Use<CommandLineArgumentsConsoleMethodParameterProvider>()
-            .For<IExceptionReporter>().Use<ConsoleExceptionReporter>();
+            .For<IExceptionReporter>().Use<ConsoleExceptionReporter>()
+            .For<IMenuManager>().UseSingleton<MenuManager>();
         return registry;
     } 
 }

@@ -1,5 +1,4 @@
-﻿using Bam.Commandline.Menu;
-using Bam;
+﻿using Bam;
 using Bam.Services;
 using Bam.Shell;
 using System.Collections.Generic;

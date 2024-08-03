@@ -9,20 +9,20 @@ namespace Bam.Console
 {
     public class ConsoleMenuInputReader : IMenuInputReader
     {
-        public ConsoleMenuInputReader(IBamContext bamContext)
+        public ConsoleMenuInputReader()
         {
-            BamContext = bamContext;
+            //BamContext = bamContext;
             ExitKey = MenuManager.ExitKey;
             Input = new StringBuilder();
         }
 
         public event EventHandler<MenuInputOutputLoopEventArgs> ReadingInput;
 
-        protected IBamContext BamContext
+        /*protected IBamContext BamContext
         {
             get;
             private set;
-        }
+        }*/
 
         protected StringBuilder Input
         {

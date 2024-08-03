@@ -16,7 +16,7 @@ namespace Bam.Console
         /// <param name="dependencyProvider"></param>
         public MenuContainer(IDependencyProvider dependencyProvider)
         // Note that this uses service locator specifically to empower a test writer
-        // to manipulate the state of the test container.
+        // to manipulate the state of the container.
         {
             this.SetDependencyProvider(dependencyProvider);
         }
