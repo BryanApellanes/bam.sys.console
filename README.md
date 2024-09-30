@@ -10,7 +10,7 @@ To begin using the `Bam.Console` menuing system define your main entry point lik
     {
         static void Main(string[] args)
         {
-            BamConsoleContext.Main(args);
+            BamConsoleContext.StaticMain(args);
         }
     }
 ```
