@@ -6,16 +6,16 @@ namespace Bam.Console
     /// <summary>
     /// Used to adorn methods that may be executed by a command line switch.
     /// </summary>
-    public class ConsoleCommandAttribute : MenuItemAttribute
+    public class ConsoleCommandAttribute : Attribute//: MenuItemAttribute
     {
         public ConsoleCommandAttribute() { }
-        public ConsoleCommandAttribute(string name) : base(name)
+        public ConsoleCommandAttribute(string name) //: base(name)
         {
             this.OptionName = name.CamelCase(true, new string[] { " " });
             this.OptionShortName = this.OptionName.CaseAcronym(true);
         }
 
-        public ConsoleCommandAttribute(string name, string description) : base(name, description)
+        public ConsoleCommandAttribute(string name, string description) //: base(name, description)
         {
             this.OptionName = name.CamelCase(true, new string[] { " " });
             this.OptionShortName = this.OptionName.CaseAcronym(true);
@@ -37,6 +37,12 @@ namespace Bam.Console
         }
 
         public string? OptionShortName
+        {
+            get;
+            private set;
+        }
+
+        public string Description
         {
             get;
             private set;

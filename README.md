@@ -105,7 +105,7 @@ Select an option below:
 
 ## InputCommand (Attribute)
 
-Adorn a method with the `InputCommand` attribute and specify the name of the command you'd like to use to execute the command from the menu prompt.
+To execute a command from the menu prompt, adorn a method with the `InputCommand` attribute and specify the name of the command you'd like to use.
 
 ```csharp
 [Menu<MenuItemAttribute>("Input Command Menu")]
@@ -174,7 +174,7 @@ Execute MenuItem
 ```
 
 ## ConsoleCommand (Attribute)
-Adorn methods with the `ConsoleCommand` attribute that you want to be able to execute from the command line.
+To execute a command from the command line, adorn methods with the `ConsoleCommand` attribute.
 
 
 ```csharp
