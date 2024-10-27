@@ -16,6 +16,12 @@ public class ConsoleMenuOptions : MenuOptions
         return GetServiceRegistry<TypedArgumentProviderType>(menuItemRunResultRenderer).Get<ConsoleMenuOptions>();
     }
     
+    /// <summary>
+    /// Get a ServiceRegistry configured to provide console menu rendering.
+    /// </summary>
+    /// <param name="menuItemRunResultRenderer">The renderer used to render run results.</param>
+    /// <typeparam name="TypedArgumentProviderType">The type of TypedArgumentProvider to use.  This component provides arguments to menu methods that have parameters.</typeparam>
+    /// <returns></returns>
     public static ServiceRegistry GetServiceRegistry<TypedArgumentProviderType>(IMenuItemRunResultRenderer? menuItemRunResultRenderer = null) where TypedArgumentProviderType: ITypedArgumentProvider
     {
         ServiceRegistry registry = new ServiceRegistry();

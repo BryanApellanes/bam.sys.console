@@ -13,7 +13,7 @@ namespace Bam.Console
 {
     public class DefaultMenuInputCommandInterpreter : IMenuInputCommandInterpreter
     {
-        private Dictionary<Type, InputCommands> _inputOptions = new Dictionary<Type, InputCommands>();
+        private readonly Dictionary<Type, InputCommands> _inputOptions = new Dictionary<Type, InputCommands>();
 
         public DefaultMenuInputCommandInterpreter(IDependencyProvider dependencyProvider)
         {
