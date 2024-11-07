@@ -71,37 +71,37 @@ namespace Bam.Console
             PrintLine(instance.ToJson(true));
         }
 
-        public static void PrintLine(string messageSignature, params object[] messageSignatureArgs)
+        public static void PrintLine(string messageSignature, params object?[] messageSignatureArgs)
         {
             Print($"{messageSignature}\r\n", messageSignatureArgs);
         }
 
-        public static void Print(string messageSignature, params object[] messageSignatureArgs)
+        public static void Print(string messageSignature, params object?[] messageSignatureArgs)
         {
             ConsoleMessage.Print(messageSignature, messageSignatureArgs);
         }
 
-        public static void PrintLine(string messageSignature, ConsoleColor textColor, params object[] messageSignatureArgs)
+        public static void PrintLine(string messageSignature, ConsoleColor textColor, params object?[] messageSignatureArgs)
         {
             Print($"{messageSignature}\r\n", textColor, messageSignatureArgs);
         }
 
-        public static void PrintLine(string messageSignature, ConsoleColor foregroundColor, ConsoleColor backgroundColor, params object[] messageSignatureArgs)
+        public static void PrintLine(string messageSignature, ConsoleColor foregroundColor, ConsoleColor backgroundColor, params object?[] messageSignatureArgs)
         {
             PrintLine(messageSignature, new ConsoleColorCombo(foregroundColor, backgroundColor), messageSignatureArgs);
         }
 
-        public static void PrintLine(string messageSignature, ConsoleColorCombo colors, params object[] messageSignatureArgs)
+        public static void PrintLine(string messageSignature, ConsoleColorCombo colors, params object?[] messageSignatureArgs)
         {
             Print($"{messageSignature}\r\n", colors, messageSignatureArgs);
         }
 
-        public static void Print(string messageSignature, ConsoleColorCombo colors, params object[] messageSignatureArgs)
+        public static void Print(string messageSignature, ConsoleColorCombo colors, params object?[] messageSignatureArgs)
         {
             ConsoleMessage.Print(messageSignature, colors, messageSignatureArgs);
         }
 
-        public static void Print(string messageSignature, ConsoleColor textColor, params object[] messageSignatureArgs)
+        public static void Print(string messageSignature, ConsoleColor textColor, params object?[] messageSignatureArgs)
         {
             ConsoleMessage.Print(messageSignature, textColor, messageSignatureArgs);
         }

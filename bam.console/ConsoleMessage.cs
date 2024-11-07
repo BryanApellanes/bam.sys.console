@@ -27,7 +27,7 @@ namespace Bam.Console
         {
         }
 
-        public ConsoleMessage(string messageSignature, ConsoleColor textColor, params object[] messageSignatureArgs) : this(messageSignature, new ConsoleColorCombo(textColor, ConsoleColor.Black))
+        public ConsoleMessage(string messageSignature, ConsoleColor textColor, params object?[] messageSignatureArgs) : this(messageSignature, new ConsoleColorCombo(textColor, ConsoleColor.Black))
         {
             SetText(messageSignature, messageSignatureArgs);
         }
@@ -40,7 +40,7 @@ namespace Bam.Console
             private set => _text = value;
         }
 
-        public void SetText(string messageSignature, params object[] messageSignatureArgs)
+        public void SetText(string messageSignature, params object?[] messageSignatureArgs)
         {
             _text = null;
             MessageSignature = messageSignature;
@@ -63,7 +63,7 @@ namespace Bam.Console
 
         protected string MessageSignature { get; set; }
 
-        protected object[] MessageArgs { get; set; }
+        protected object?[] MessageArgs { get; set; }
 
         protected string GetText()
         {
@@ -197,7 +197,7 @@ namespace Bam.Console
             PrintMessage(this);
         }
 
-        public static void Print(string messageSignature, params object[] messageArgs)
+        public static void Print(string messageSignature, params object?[] messageArgs)
         {
             if (messageArgs != null && messageArgs.Length == 0)
             {
@@ -214,7 +214,7 @@ namespace Bam.Console
             Print(new ConsoleMessage(messageSignature, colors, messageArgs));
         }
 
-        public static void Print(string messageSignature, ConsoleColor textColor, params object[] messageArgs)
+        public static void Print(string messageSignature, ConsoleColor textColor, params object?[] messageArgs)
         {
             if (messageArgs == null || messageArgs.Length == 0)
             {
