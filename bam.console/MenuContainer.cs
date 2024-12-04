@@ -30,7 +30,7 @@ namespace Bam.Console
         protected IDependencyProvider? DependencyProvider
         {
             get;
-            private set;
+            set;
         }
 
         protected IMethodArgumentProvider? MethodArgumentProvider

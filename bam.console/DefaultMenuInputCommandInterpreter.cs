@@ -89,7 +89,10 @@ namespace Bam.Console
 
         protected virtual object?[] GetMethodArguments(MethodInfo methodInfo)
         {
-            return new DependencyProviderMethodArgumentProvider(DependencyProvider).GetMethodArguments(methodInfo);
+            DependencyProviderMethodArgumentProvider argumentProvider =
+                new DependencyProviderMethodArgumentProvider(DependencyProvider);
+            object?[] arguments = argumentProvider.GetMethodArguments(methodInfo);
+            return arguments;
         }
 
         protected virtual InputCommandResult InvokeOption(InputCommand command, string[] inputStrings)

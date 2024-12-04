@@ -24,12 +24,6 @@ namespace Bam.Console
         public BamConsoleContext()
         {
             ValidArgumentInfo = new List<ArgumentInfo>();
-            ServiceRegistry = GetDefaultContextServiceRegistry();
-        }
-
-        public BamConsoleContext(ServiceRegistry serviceRegistry) : this()
-        {
-            ServiceRegistry = serviceRegistry;
         }
 
         public void Main(string[] args)
@@ -195,10 +189,11 @@ namespace Bam.Console
         public static event ExitDelegate Exiting;
         public static event ExitDelegate Exited;
 
+        private ServiceRegistry? _serviceRegistry;
         public override ServiceRegistry ServiceRegistry
         {
-            get;
-            set;
+            get => _serviceRegistry ??= GetDefaultContextServiceRegistry();
+            set => _serviceRegistry = value;
         }
 
         public IArgumentParser ArgumentParser => ServiceRegistry.Get<IArgumentParser>();

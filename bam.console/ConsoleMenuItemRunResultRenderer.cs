@@ -12,9 +12,9 @@ namespace Bam.Console
     {
         public Action<IMenuItemRunResult> ItemRunSucceeded { get; set; } = (menuItemRunResult) => Message.PrintLine("{0} succeeded", ConsoleColor.Green, menuItemRunResult?.MenuItem?.DisplayName ?? "run");
 
-        public Action<IMenuItemRunResult> ItemRunFailed { get; set; } = (menuItemRunResult) => Message.PrintLine("{0} failed", ConsoleColor.Green, menuItemRunResult?.MenuItem?.DisplayName ?? "run");
+        public Action<IMenuItemRunResult> ItemRunFailed { get; set; } = (menuItemRunResult) => Message.PrintLine("{0} failed", ConsoleColor.Magenta, menuItemRunResult?.MenuItem?.DisplayName ?? "run");
 
-        public Action<IMenuItemRunResult> ItemRunException { get; set; } = (menuItemRunResult) => Message.PrintLine(menuItemRunResult?.Exception?.GetMessageAndStackTrace() ?? "Stacktrace unavailable", ConsoleColor.Magenta);
+        public Action<IMenuItemRunResult> ItemRunException { get; set; } = (menuItemRunResult) => Message.PrintLine(menuItemRunResult?.Exception?.GetMessageAndStackTrace() ?? "Stacktrace unavailable", ConsoleColor.DarkMagenta);
 
         public void RenderMenuItemRunResult(IMenuItemRunResult menuItemRunResult)
         {
