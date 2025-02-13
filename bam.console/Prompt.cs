@@ -169,4 +169,34 @@ public class Prompt
         }
         set => _provider = value;
     }
+
+    public static string ForPassword(string message = "Please enter password", ConsoleColor textColor = ConsoleColor.Cyan)
+    {
+        return ForPassword(message, ">>", new ConsoleColorCombo(textColor));
+    }
+    
+    public static string ForPassword(string message, string promptText, ConsoleColorCombo colors)
+    {
+        Message.Print($"{message} {promptText} ", colors);
+        string pass = string.Empty;
+        ConsoleKey key;
+        do
+        {
+            var keyInfo = System.Console.ReadKey(intercept: true);
+            key = keyInfo.Key;
+
+            if (key == ConsoleKey.Backspace && pass.Length > 0)
+            {
+                System.Console.Write("\b \b");
+                pass = pass[0..^1];
+            }
+            else if (!char.IsControl(keyInfo.KeyChar))
+            {
+                System.Console.Write("*");
+                pass += keyInfo.KeyChar;
+            }
+        } while (key != ConsoleKey.Enter);
+
+        return pass;
+    }
 }

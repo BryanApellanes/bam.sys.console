@@ -17,6 +17,11 @@ namespace Bam.Console
 {
     public static class Extensions
     {
+        public static ProcessOutput Run(this string command)
+        {
+            return Run(command, (s) => { });
+        }
+        
         /// <summary>
         /// Run the specified command in a separate process capturing the output
         /// and error streams if any. This method will block if a timeout is specified,
