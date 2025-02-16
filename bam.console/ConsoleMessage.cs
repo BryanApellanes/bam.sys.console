@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Bam;
-using Bam.Logging;
+﻿using Bam.Logging;
 
 namespace Bam.Console
 {

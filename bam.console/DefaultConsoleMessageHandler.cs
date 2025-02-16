@@ -1,5 +1,4 @@
-﻿using System;
-using Bam.Console;
+﻿using Bam.Console;
 
 namespace Bam
 {

@@ -1,11 +1,4 @@
-﻿using bam.configuration;
-using Bam;
-using Bam.Shell;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bam.Shell;
 
 namespace Bam.Console
 {

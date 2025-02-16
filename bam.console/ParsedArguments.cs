@@ -1,12 +1,6 @@
 /*
 	Copyright © Bryan Apellanes 2015  
 */
-using Bam;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace Bam.Console
 {

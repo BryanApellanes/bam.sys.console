@@ -1,4 +1,3 @@
-using System;
 using Bam.Analytics;
 using Bam.Logging;
 

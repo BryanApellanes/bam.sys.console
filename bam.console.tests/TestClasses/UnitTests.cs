@@ -1,10 +1,5 @@
 ﻿using Bam.Shell;
 using Bam.Test;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bam.Console.Tests.TestClasses
 {

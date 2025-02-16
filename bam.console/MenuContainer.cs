@@ -1,8 +1,7 @@
 ﻿using Bam.Shell;
 using Bam.Services;
 using System.Reflection;
-using static Bam.Analytics.Diff;
-using Bam;
+using Bam.DependencyInjection;
 
 namespace Bam.Console
 {

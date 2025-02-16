@@ -1,16 +1,11 @@
-﻿using Bam;
-using Bam.Configuration;
-using Bam.CoreServices;
+﻿using Bam.Configuration;
 using Bam.Logging;
 using Bam.Shell;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
+using Bam.DependencyInjection;
+using Bam.Services;
 
 namespace Bam.Console
 {

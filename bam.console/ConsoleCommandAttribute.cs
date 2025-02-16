@@ -1,7 +1,4 @@
-﻿using Bam;
-using Bam.Shell;
-
-namespace Bam.Console
+﻿namespace Bam.Console
 {
     /// <summary>
     /// Used to adorn methods that may be executed by a command line switch.

@@ -1,10 +1,6 @@
-﻿using Bam;
+﻿using Bam.DependencyInjection;
 using Bam.Services;
 using Bam.Shell;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bam.Console
 {

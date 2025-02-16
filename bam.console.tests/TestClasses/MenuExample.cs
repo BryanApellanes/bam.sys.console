@@ -1,5 +1,4 @@
 using Bam.Shell;
-using System;
 
 namespace Bam.Console.Tests.TestClasses;
 
